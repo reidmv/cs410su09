@@ -1,0 +1,36 @@
+/**
+ * Copyright (C) 2009 Reid Vandewiele
+ * ALL RIGHTS RESERVED
+ *
+ * To create the Broke database, run this file through psql, e.g.
+ * `psql -f 1_create_main_tables.postgresql $DB $USER` 
+ *
+ * Or from interactive mode,
+ * `db_name=> \i 1_create_main_tables.postgresql`
+ */
+
+DROP SEQUENCE size_classes_pkey_seq;
+CREATE SEQUENCE size_classes_pkey_seq;
+
+DROP TABLE size_classes;
+CREATE TABLE size_classes (
+	size_class_pkey integer DEFAULT nextval('size_classes_pkey_seq'::regclass) PRIMARY KEY,
+	size_class character varying NOT NULL);
+
+comment on table size_classes is 'Contains size classifications for materials.';
+comment on column size_classes.size_class_pkey is 'Primary key for size_classes table.';
+comment on column size_classes.size_class is 'Size classification (in English).';
+
+DROP SEQUENCE sizes_pkey_seq;
+CREATE SEQUENCE sizes_pkey_seq;
+
+DROP TABLE sizes;
+CREATE TABLE sizes (
+	size_pkey integer DEFAULT nextval('sizes_pkey_seq'::regclass) PRIMARY KEY,
+	size_class integer NOT NULL REFERENCES size_classes,
+	size character varying NOT NULL);
+
+comment on table sizes is 'Defines the specific sizes.';
+comment on column sizes.size_pkey is 'Primary key for sizes table.';
+comment on column sizes.size_class is 'Reference to size_class.';
+comment on column sizes.size is 'Size (in English).';
