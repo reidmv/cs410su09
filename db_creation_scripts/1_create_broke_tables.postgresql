@@ -20,9 +20,9 @@
 CREATE SEQUENCE size_classes_pkey_seq;
 CREATE TABLE size_classes (
 	size_class_pkey integer DEFAULT nextval('size_classes_pkey_seq'::regclass) PRIMARY KEY,
-	size_class character varying NOT NULL);
+	size_class      varchar NOT NULL);
 
-COMMENT ON TABLE size_classes IS 'Contains size classifications for materials.';
+COMMENT ON TABLE  size_classes IS 'Contains size classifications for materials.';
 COMMENT ON COLUMN size_classes.size_class_pkey IS 'Primary key for size_classes table.';
 COMMENT ON COLUMN size_classes.size_class IS 'Size classification (in English).';
 
@@ -33,11 +33,11 @@ COMMENT ON COLUMN size_classes.size_class IS 'Size classification (in English).'
 
 CREATE SEQUENCE sizes_pkey_seq;
 CREATE TABLE sizes (
-	size_pkey integer DEFAULT nextval('sizes_pkey_seq'::regclass) PRIMARY KEY,
+	size_pkey  integer DEFAULT nextval('sizes_pkey_seq'::regclass) PRIMARY KEY,
 	size_class integer NOT NULL REFERENCES size_classes,
-	size character varying NOT NULL);
+	size       varchar NOT NULL);
 
-COMMENT ON TABLE sizes IS 'Defines the specific sizes.';
+COMMENT ON TABLE  sizes IS 'Defines the specific sizes.';
 COMMENT ON COLUMN sizes.size_pkey IS 'Primary key for sizes table.';
 COMMENT ON COLUMN sizes.size_class IS 'Reference to size_class.';
 COMMENT ON COLUMN sizes.size IS 'Size (in English).';
@@ -52,9 +52,9 @@ COMMENT ON COLUMN sizes.size IS 'Size (in English).';
 CREATE SEQUENCE colors_pkey_seq;
 CREATE TABLE colors (
 	color_pkey integer DEFAULT nextval('colors_pkey_seq'::regclass) PRIMARY KEY,
-	color character varying NOT NULL);
+	color      varchar NOT NULL);
 
-COMMENT ON TABLE colors IS 'Contains possible ribbon colors for orders.';
+COMMENT ON TABLE  colors IS 'Contains possible ribbon colors for orders.';
 COMMENT ON COLUMN colors.color_pkey IS 'Primary key for colors table.';
 COMMENT ON COLUMN colors.color IS 'Ribbon color.';
 
@@ -64,11 +64,11 @@ COMMENT ON COLUMN colors.color IS 'Ribbon color.';
 
 CREATE SEQUENCE plants_pkey_seq;
 CREATE TABLE plants (
-	plant_pkey integer DEFAULT nextval('plants_pkey_seq'::regclass) PRIMARY KEY,
-	botanical_name character varying NOT NULL,
-	common_name character varying NOT NULL);
+	plant_pkey     integer DEFAULT nextval('plants_pkey_seq'::regclass) PRIMARY KEY,
+	botanical_name varchar NOT NULL,
+	common_name    varchar NOT NULL);
 
-COMMENT ON TABLE plants IS 'Contains a listing of all the plants we know about.';
+COMMENT ON TABLE  plants IS 'Contains a listing of all the plants we know about.';
 COMMENT ON COLUMN plants.plant_pkey IS 'The Primary Key for the plants table.';
 COMMENT ON COLUMN plants.botanical_name IS 'The botanical name of the plant.';
 COMMENT ON COLUMN plants.common_name IS 'The common name of the plant.';
@@ -80,9 +80,9 @@ COMMENT ON COLUMN plants.common_name IS 'The common name of the plant.';
 
 CREATE TABLE order_statuses (
 	order_status_pkey integer PRIMARY KEY,
-	order_status character varying NOT NULL);
+	order_status      varchar NOT NULL);
 
-COMMENT ON TABLE order_statuses IS 'Descriptions of each order status.';
+COMMENT ON TABLE  order_statuses IS 'Descriptions of each order status.';
 COMMENT ON COLUMN order_statuses.order_status_pkey IS 'Primary Key of order_statuses table.';
 COMMENT ON COLUMN order_statuses.order_status IS 'Order status (in English).';
 
@@ -94,7 +94,11 @@ COMMENT ON COLUMN order_statuses.order_status IS 'Order status (in English).';
 CREATE SEQUENCE business_partner_types_pkey_seq;
 CREATE TABLE business_partner_types (
 	business_partner_type_pkey integer DEFAULT nextval('business_partner_types_pkey_seq'::regclass) PRIMARY KEY,
-	type character varying NOT NULL);
+	type                       varchar NOT NULL);
+
+COMMENT ON TABLE  business_partner_types IS 'e.g. Supplier, Customer, Truck Broker, etc.';
+COMMENT ON COLUMN business_partner_types.business_partner_type_pkey IS 'Primary key.';
+COMMENT ON COLUMN business_partner_types.type IS 'The linquistic description of the type.';
 
 /**
  * The geographical_zones table specifies categories which allow business
@@ -104,9 +108,9 @@ CREATE TABLE business_partner_types (
 CREATE SEQUENCE geographical_zones_pkey_seq;
 CREATE TABLE geographical_zones (
 	geographical_zone_pkey integer DEFAULT nextval('geographical_zones_pkey_seq'::regclass) PRIMARY KEY,
-	zone character varying);
+	zone                   varchar);
 
-COMMENT ON TABLE geographical_zones IS 'Specifies categories into which business partners can be grouped.';
+COMMENT ON TABLE  geographical_zones IS 'Specifies categories into which business partners can be grouped.';
 COMMENT ON COLUMN geographical_zones.geographical_zone_pkey IS 'Primary Key of geographical_zones table.';
 COMMENT ON COLUMN geographical_zones.zone IS 'The description of the zone.';
 
@@ -119,25 +123,25 @@ COMMENT ON COLUMN geographical_zones.zone IS 'The description of the zone.';
 
 CREATE SEQUENCE business_partners_pkey_seq;
 CREATE TABLE business_partners (
-	business_partners_pkey integer DEFAULT nextval('business_partners_pkey_seq'::regclass) PRIMARY KEY,
-	type integer NOT NULL REFERENCES business_partner_types,
-	geographical_zone integer NOT NULL REFERENCES geographical_zones,
-	business character varying NOT NULL,
-	location_street_address character varying NOT NULL,
-	location_city character varying NOT NULL,
-	location_state character varying NOT NULL,
-	location_zipcode character varying NOT NULL,
-	billing_street_address character varying NOT NULL,
-	billing_city character varying NOT NULL,
-	billing_state character varying NOT NULL,
-	billing_zipcode character varying NOT NULL,
-	fax character varying,
-	phone character varying,
-	email character varying);
+	business_partners_pkey  integer DEFAULT nextval('business_partners_pkey_seq'::regclass) PRIMARY KEY,
+	type                    integer NOT NULL REFERENCES business_partner_types,
+	geographical_zone       integer NOT NULL REFERENCES geographical_zones,
+	business                varchar NOT NULL,
+	location_street_address varchar NOT NULL,
+	location_city           varchar NOT NULL,
+	location_state          varchar NOT NULL,
+	location_zipcode        varchar NOT NULL,
+	billing_street_address  varchar NOT NULL,
+	billing_city            varchar NOT NULL,
+	billing_state           varchar NOT NULL,
+	billing_zipcode         varchar NOT NULL,
+	fax                     varchar,
+	phone                   varchar,
+	email                   varchar);
 
 CREATE INDEX business_partners_type ON business_partners (type);
 
-COMMENT ON TABLE business_partners IS 'Customers, suppliers, companies with whom business is done.';
+COMMENT ON TABLE  business_partners IS 'Customers, suppliers, companies with whom business is done.';
 COMMENT ON COLUMN business_partners.business_partners_pkey IS 'Primary key of business_partners table.';
 COMMENT ON COLUMN business_partners.type IS 'Type of partner; references business_partner_types.';
 COMMENT ON COLUMN business_partners.geographical_zone IS 'Zone this partner is located in (references geographical_zones).';
@@ -161,13 +165,13 @@ COMMENT ON COLUMN business_partners.email IS 'General email address of partner.'
 
 CREATE SEQUENCE contacts_pkey_seq;
 CREATE TABLE contacts (
-	contact_pkey integer DEFAULT nextval('contacts_pkey_seq'::regclass) PRIMARY KEY,
+	contact_pkey     integer DEFAULT nextval('contacts_pkey_seq'::regclass) PRIMARY KEY,
 	business_partner integer NOT NULL REFERENCES business_partners,
-	first_name character varying NOT NULL,
-	last_name character varying NOT NULL,
-	comment character varying);
+	first_name       varchar NOT NULL,
+	last_name        varchar NOT NULL,
+	comment          varchar);
 
-COMMENT ON TABLE contacts IS 'People we interact with (associated with a business partner).';
+COMMENT ON TABLE  contacts IS 'People we interact with (associated with a business partner).';
 COMMENT ON COLUMN contacts.business_partner IS 'The business partner this contact is associated with.';
 COMMENT ON COLUMN contacts.first_name IS 'The contact''s first name.';
 COMMENT ON COLUMN contacts.last_name IS 'The contact''s last name.';
@@ -181,9 +185,9 @@ COMMENT ON COLUMN contacts.comment IS 'Any comments about the contact, e.g. "fie
 CREATE SEQUENCE contact_detail_types_pkey_seq;
 CREATE TABLE contact_detail_types (
 	contact_detail_type_pkey integer DEFAULT nextval('contact_detail_types_pkey_seq'::regclass) PRIMARY KEY,
-	detail_type character varying NOT NULL);
+	detail_type              varchar NOT NULL);
 
-COMMENT ON TABLE contact_detail_types IS 'Type of contact detail, e.g. "phone", "email".';
+COMMENT ON TABLE  contact_detail_types IS 'Type of contact detail, e.g. "phone", "email".';
 COMMENT ON COLUMN contact_detail_types.contact_detail_type_pkey IS 'Primary Key of contact_detail_type table.';
 COMMENT ON COLUMN contact_detail_types.detail_type IS 'Type of contact detail (in English).';
 
@@ -195,11 +199,71 @@ CREATE SEQUENCE contact_details_pkey_seq;
 CREATE TABLE contact_details (
 	contact_detail_pkey integer DEFAULT nextval('contact_details_pkey_seq'::regclass) PRIMARY KEY,
 	contact_detail_type integer NOT NULL REFERENCES contact_detail_types,
-	contact_detail character varying NOT NULL,
-	comment character varying);
+	contact_detail      varchar NOT NULL,
+	comment             varchar);
 
-COMMENT ON TABLE contact_details IS 'Phone numbers associated with contacts.';
+COMMENT ON TABLE  contact_details IS 'Contact information associated with contacts.';
 COMMENT ON COLUMN contact_details.contact_detail_pkey IS 'Primary Key of contact_details table.';
-COMMENT ON COLUMN contact_details.contact_detail IS 'Phone number.';
-COMMENT ON COLUMN contact_details.comment IS 'Comment about this phone number, e.g. "mobile", "office".';
+COMMENT ON COLUMN contact_details.contact_detail IS 'Specifics. Phone number, e-mail address, etc.';
+COMMENT ON COLUMN contact_details.comment IS 'Comment about this contact info, e.g. "mobile", "business".';
 
+/**
+ * The availabilities table contains information about what materials we
+ * currently believe our vendors to have, and at what prices. This
+ * information is a sort of snapshot that we use to try and know what's out
+ * there at any given point in time. If the info is more than three months
+ * old, it's probably not useful anymore.
+ */
+
+CREATE SEQUENCE availabilities_pkey_seq;
+CREATE TABLE availabilities (
+	availability_pkey integer DEFAULT nextval('availabilities_pkey_seq'::regclass) PRIMARY KEY,
+	plant             integer NOT NULL REFERENCES plants,
+	size_class        integer NOT NULL REFERENCES size_classes,
+	size              integer NOT NULL REFERENCES sizes,
+	supplier          integer NOT NULL REFERENCES business_partners,
+	units_available   integer NOT NULL,
+	price             money   NOT NULL,
+	date              date    DEFAULT now() NOT NULL,
+	comment           varchar);
+
+COMMENT ON TABLE  availabilities IS 'Presumed material availabilities.';
+COMMENT ON COLUMN availabilities.availability_pkey IS 'Primary key of availabilities table.';
+COMMENT ON COLUMN availabilities.plant IS 'Primary key of plants table.';
+COMMENT ON COLUMN availabilities.supplier IS 'Primary key of business_partners table; should be of type "supplier".';
+COMMENT ON COLUMN availabilities.units_available IS 'The number of units available from $SUPPLIER at $PRICE.';
+COMMENT ON COLUMN availabilities.price IS 'The price per unit of $PLANT from $SUPPLIER on $DATE.';
+COMMENT ON COLUMN availabilities.date IS 'The date this information was known current.';
+COMMENT ON COLUMN availabilities.comment IS 'A comment about this particular availability.';
+
+/**
+ * The orders table contains details about orders our custombers have placed
+ * with us. 
+ */
+
+CREATE SEQUENCE orders_pkey_seq;
+CREATE TABLE orders (
+	orders_pkey            integer DEFAULT nextval('orders_pkey_seq'::regclass) PRIMARY KEY,
+	order_status           integer NOT NULL REFERENCES order_statuses,
+	color                  integer NOT NULL REFERENCES colors,
+	customer               integer NOT NULL REFERENCES business_partners,
+	order_date             date NOT NULL DEFAULT now(),
+	customer_job_address   text,
+	customer_job_name      varchar,
+	delivery_address       text,
+	delivery_date          time WITH TIME ZONE,
+	order_fulfillment_zone integer REFERENCES geographical_zones,
+	order_destination_zone integer REFERENCES geographical_zones);
+
+COMMENT ON TABLE  orders IS 'Listing of orders our customers have placed with us.';
+COMMENT ON COLUMN orders.color IS 'Ribbon color assigned to order.';
+COMMENT ON COLUMN orders.order_status IS 'Primery key of order_statuses table. Current status of order.'; 
+COMMENT ON COLUMN orders.color IS 'Ribbon color associated with order. Items be tagged with this color.';
+COMMENT ON COLUMN orders.customer IS 'Primary key of business_partners table. This customer ordered this order.';
+COMMENT ON COLUMN orders.order_date IS 'The order was placed on this date.';
+COMMENT ON COLUMN orders.customer_job_address IS 'Where the customer will be using the material.';
+COMMENT ON COLUMN orders.customer_job_name IS 'The customer''s job reference name.';
+COMMENT ON COLUMN orders.delivery_address IS 'The address to deliver the order to.';
+COMMENT ON COLUMN orders.delivery_date IS 'The date and/or time at which to deliver the order.';
+COMMENT ON COLUMN orders.order_fulfillment_zone IS 'The zone in which the order will be filled; where the suppliers are.';
+COMMENT ON COLUMN orders.order_destination_zone IS 'The zone to which the order will be shipped; where the customer wants it.';

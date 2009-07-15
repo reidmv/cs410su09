@@ -9,6 +9,11 @@
  * `db_name=> \i 0_drop_broke_tables.postgresql`
  */
 
+DROP TABLE availabilities;
+DROP TABLE orders;
+DROP SEQUENCE availabilities_pkey_seq;
+DROP SEQUENCE orders_pkey_seq;
+
 DROP TABLE contact_details;
 DROP TABLE contact_detail_types;
 DROP TABLE contacts;
@@ -25,14 +30,13 @@ DROP SEQUENCE geographical_zones_pkey_seq;
 
 DROP TABLE sizes;
 DROP TABLE size_classes;
-DROP SEQUENCE sizes_pkey_seq CASCADE;
-DROP SEQUENCE size_classes_pkey_seq CASCADE;
+DROP TABLE plants;
+DROP SEQUENCE sizes_pkey_seq;
+DROP SEQUENCE size_classes_pkey_seq;
+DROP SEQUENCE plants_pkey_seq;
 
 DROP TABLE colors;
-DROP SEQUENCE colors_pkey_seq CASCADE;
-
-DROP TABLE plants;
-DROP SEQUENCE plants_pkey_seq CASCADE;
+DROP SEQUENCE colors_pkey_seq;
 
 DROP TABLE order_statuses;
 
