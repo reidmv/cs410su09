@@ -7,6 +7,9 @@
  *
  * Or from interactive mode,
  * `db_name=> \i 1_create_main_tables.postgresql`
+ * 
+ * If the database is in need of de-population, the accompanying
+ * 0_drop_broke_tables.postgresql should be run first.
  */
 
 /**
@@ -14,10 +17,7 @@
  * associated. e.g. "gallon", "cup", "height".
  */
 
-DROP SEQUENCE size_classes_pkey_seq CASCADE;
 CREATE SEQUENCE size_classes_pkey_seq;
-
-DROP TABLE size_classes CASCADE;
 CREATE TABLE size_classes (
 	size_class_pkey integer DEFAULT nextval('size_classes_pkey_seq'::regclass) PRIMARY KEY,
 	size_class character varying NOT NULL);
@@ -31,10 +31,7 @@ COMMENT ON COLUMN size_classes.size_class IS 'Size classification (in English).'
  * specific size class. e.g. {"12", "gallon"} or {"12'-14'", "spread"}
  */
 
-DROP SEQUENCE sizes_pkey_seq CASCADE;
 CREATE SEQUENCE sizes_pkey_seq;
-
-DROP TABLE sizes;
 CREATE TABLE sizes (
 	size_pkey integer DEFAULT nextval('sizes_pkey_seq'::regclass) PRIMARY KEY,
 	size_class integer NOT NULL REFERENCES size_classes,
@@ -52,10 +49,7 @@ COMMENT ON COLUMN sizes.size IS 'Size (in English).';
  * colors.
  */
 
-DROP SEQUENCE colors_pkey_seq CASCADE;
 CREATE SEQUENCE colors_pkey_seq;
-
-DROP TABLE colors;
 CREATE TABLE colors (
 	color_pkey integer DEFAULT nextval('colors_pkey_seq'::regclass) PRIMARY KEY,
 	color character varying NOT NULL);
@@ -68,10 +62,7 @@ COMMENT ON COLUMN colors.color IS 'Ribbon color.';
  * The plants table contains the common and botanical names for each plant.
  */
 
-DROP SEQUENCE plants_pkey_seq CASCADE;
 CREATE SEQUENCE plants_pkey_seq;
-
-DROP TABLE plants;
 CREATE TABLE plants (
 	plant_pkey integer DEFAULT nextval('plants_pkey_seq'::regclass) PRIMARY KEY,
 	botanical_name character varying NOT NULL,
@@ -87,7 +78,6 @@ COMMENT ON COLUMN plants.common_name IS 'The common name of the plant.';
  * status, e.g. "Ordered", "Confirmed", "Shipped".
  */
 
-DROP TABLE order_statuses;
 CREATE TABLE order_statuses (
 	order_status_pkey integer PRIMARY KEY,
 	order_status character varying NOT NULL);
@@ -101,10 +91,7 @@ COMMENT ON COLUMN order_statuses.order_status IS 'Order status (in English).';
  * business partners have with us. e.g. "Supplier", "Customer".
  */
 
-DROP SEQUENCE business_partner_types_pkey_seq CASCADE;
 CREATE SEQUENCE business_partner_types_pkey_seq;
-
-DROP TABLE business_partner_types CASCADE;
 CREATE TABLE business_partner_types (
 	business_partner_type_pkey integer DEFAULT nextval('business_partner_types_pkey_seq'::regclass) PRIMARY KEY,
 	type character varying NOT NULL);
@@ -114,10 +101,7 @@ CREATE TABLE business_partner_types (
  * partners to be referenced by what general area they are located in.
  */
 
-DROP SEQUENCE geographical_zones_pkey_seq CASCADE;
 CREATE SEQUENCE geographical_zones_pkey_seq;
-
-DROP TABLE geographical_zones CASCADE;
 CREATE TABLE geographical_zones (
 	geographical_zone_pkey integer DEFAULT nextval('geographical_zones_pkey_seq'::regclass) PRIMARY KEY,
 	zone character varying);
@@ -133,10 +117,7 @@ COMMENT ON COLUMN geographical_zones.zone IS 'The description of the zone.';
  * database design here could get as complicated as we want.
  */
 
-DROP SEQUENCE business_partners_pkey_seq CASCADE;
 CREATE SEQUENCE business_partners_pkey_seq;
-
-DROP TABLE business_partners CASCADE;
 CREATE TABLE business_partners (
 	business_partners_pkey integer DEFAULT nextval('business_partners_pkey_seq'::regclass) PRIMARY KEY,
 	type integer NOT NULL REFERENCES business_partner_types,
@@ -178,10 +159,7 @@ COMMENT ON COLUMN business_partners.email IS 'General email address of partner.'
  * company from the business_partners table.
  */
 
-DROP SEQUENCE contacts_pkey_seq CASCADE;
 CREATE SEQUENCE contacts_pkey_seq;
-
-DROP TABLE contacts;
 CREATE TABLE contacts (
 	contact_pkey integer DEFAULT nextval('contacts_pkey_seq'::regclass) PRIMARY KEY,
 	business_partner integer NOT NULL REFERENCES business_partners,
@@ -200,10 +178,7 @@ COMMENT ON COLUMN contacts.comment IS 'Any comments about the contact, e.g. "fie
  * e.g. "email", "phone", "pager".
  */
 
-DROP SEQUENCE contact_detail_types_pkey_seq CASCADE;
 CREATE SEQUENCE contact_detail_types_pkey_seq;
-
-DROP TABLE contact_detail_types CASCADE;
 CREATE TABLE contact_detail_types (
 	contact_detail_type_pkey integer DEFAULT nextval('contact_detail_types_pkey_seq'::regclass) PRIMARY KEY,
 	detail_type character varying NOT NULL);
@@ -216,10 +191,7 @@ COMMENT ON COLUMN contact_detail_types.detail_type IS 'Type of contact detail (i
  * The contact_details table contains specifics of how to contact a contact.
  */
 
-DROP SEQUENCE contact_details_pkey_seq CASCADE;
 CREATE SEQUENCE contact_details_pkey_seq;
-
-DROP TABLE contact_details;
 CREATE TABLE contact_details (
 	contact_detail_pkey integer DEFAULT nextval('contact_details_pkey_seq'::regclass) PRIMARY KEY,
 	contact_detail_type integer NOT NULL REFERENCES contact_detail_types,
