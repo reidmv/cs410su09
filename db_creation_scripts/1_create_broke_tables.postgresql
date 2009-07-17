@@ -126,10 +126,10 @@ CREATE TABLE business_partners (
 	phone                   varchar,
 	email                   varchar);
 
-CREATE INDEX business_partners_type ON business_partners (type);
+CREATE INDEX business_partners_type ON business_partners (business_partner_type);
 
 COMMENT ON TABLE  business_partners IS 'Customers, suppliers, companies with whom business is done.';
-COMMENT ON COLUMN business_partners.business_partners_pkey IS 'Primary key of business_partners table.';
+COMMENT ON COLUMN business_partners.business_partner_pkey IS 'Primary key of business_partners table.';
 COMMENT ON COLUMN business_partners.business_partner_type IS 'Type of partner; references business_partner_types.';
 COMMENT ON COLUMN business_partners.geographical_zone IS 'Zone this partner is located in (references geographical_zones).';
 COMMENT ON COLUMN	business_partners.business IS 'Business name of partner.';
@@ -224,6 +224,87 @@ COMMENT ON COLUMN availabilities.availability_date IS 'The date this information
 COMMENT ON COLUMN availabilities.note IS 'A comment about this particular availability.';
 
 /**
+ * The shipping_load_statuses table defines the various states a load can be
+ * said to be in at any given time.
+ */
+
+CREATE TABLE shipping_load_statuses (
+	shipping_load_status_pkey integer PRIMARY KEY,
+	status                    varchar NOT NULL);
+
+COMMENT ON TABLE  shipping_load_statuses IS 'Defines the possible states of a shipping load.';
+COMMENT ON COLUMN shipping_load_statuses.shipping_load_status_pkey IS 'Primary key of shipping_load_statuses table.';
+COMMENT ON COLUMN shipping_load_statuses.status IS 'Text description of the state or status.';
+
+/**
+ * the shipping_loads table contains a listing of all the "loads" on which
+ * material may ship out. A shipping load is typically contracted for through
+ * a broker who may or may not be the actual carrier.
+ */
+
+CREATE SEQUENCE shipping_loads_pkey_seq;
+CREATE TABLE shipping_loads (
+	shipping_load_pkey integer DEFAULT nextval('shipping_loads_pkey_seq'::regclass) PRIMARY KEY,
+	status             integer NOT NULL REFERENCES shipping_load_statuses,
+	carrier            integer REFERENCES business_partners,
+	broker             integer REFERENCES business_partners,
+	ship_date          timestamp WITH TIME ZONE,
+	note               varchar);
+
+COMMENT ON TABLE  shipping_loads IS 'A listing of shipping "loads" on which material may be shipped.';
+COMMENT ON COLUMN shipping_loads.shipping_load_pkey IS 'Primary key of shipping_loads table.';
+COMMENT ON COLUMN shipping_loads.status IS 'The current status of this shipping load.';
+COMMENT ON COLUMN shipping_loads.carrier IS 'The carrier carrying this load.';
+COMMENT ON COLUMN shipping_loads.broker IS 'The broker through which the carrier was obtained.';
+COMMENT ON COLUMN shipping_loads.note IS 'A brief comment about this shipping load.';
+
+/**
+ * The customer_order_statuses table contains descriptions of each possible
+ * order status, e.g. "Ordered", "Confirmed", "Shipped".
+ */
+
+CREATE TABLE customer_order_statuses (
+	customer_order_status_pkey integer PRIMARY KEY,
+	status                     varchar NOT NULL);
+
+COMMENT ON TABLE  customer_order_statuses IS 'Descriptions of each order status.';
+COMMENT ON COLUMN customer_order_statuses.customer_order_status_pkey IS 'Primary Key of customer_order_statuses table.';
+COMMENT ON COLUMN customer_order_statuses.status IS 'Order status (in English).';
+
+/**
+ * The customer_orders table contains details about orders our customers have placed
+ * with us. 
+ */
+
+CREATE SEQUENCE customer_orders_pkey_seq;
+CREATE TABLE customer_orders (
+	customer_order_pkey   integer DEFAULT nextval('customer_orders_pkey_seq'::regclass) PRIMARY KEY,
+	customer_order_status integer NOT NULL REFERENCES customer_order_statuses,
+	color                 integer NOT NULL REFERENCES colors,
+	customer              integer NOT NULL REFERENCES business_partners,
+	order_date            date NOT NULL DEFAULT now(),
+	customer_job_address  text,
+	customer_job_name     varchar,
+	delivery_address      text,
+	delivery_date         time WITH TIME ZONE,
+	fulfillment_zone      integer REFERENCES geographical_zones,
+	destination_zone      integer REFERENCES geographical_zones);
+
+COMMENT ON TABLE  customer_orders IS 'Listing of orders our customers have placed with us.';
+COMMENT ON COLUMN customer_orders.customer_order_pkey IS 'Primary key of customer_orders table.';
+COMMENT ON COLUMN customer_orders.color IS 'Ribbon color assigned to order.';
+COMMENT ON COLUMN customer_orders.customer_order_status IS 'Primery key of customer_order_statuses table. Current status of order.'; 
+COMMENT ON COLUMN customer_orders.color IS 'Ribbon color associated with order. Items be tagged with this color.';
+COMMENT ON COLUMN customer_orders.customer IS 'Primary key of business_partners table. This customer ordered this order.';
+COMMENT ON COLUMN customer_orders.order_date IS 'The order was placed on this date.';
+COMMENT ON COLUMN customer_orders.customer_job_address IS 'Where the customer will be using the material.';
+COMMENT ON COLUMN customer_orders.customer_job_name IS 'The customer''s job reference name.';
+COMMENT ON COLUMN customer_orders.delivery_address IS 'The address to deliver the order to.';
+COMMENT ON COLUMN customer_orders.delivery_date IS 'The date and/or time at which to deliver the order.';
+COMMENT ON COLUMN customer_orders.fulfillment_zone IS 'The zone in which the order will be filled; where the suppliers are.';
+COMMENT ON COLUMN customer_orders.destination_zone IS 'The zone to which the order will be shipped; where the customer wants it.';
+
+/**
  * The purchase_order_statuses table defines each possible status for a
  * purchase order. "Issued", "Filled", "Paid", etc.
  */
@@ -260,6 +341,61 @@ COMMENT ON COLUMN purchase_orders.issue_date IS 'The date the PO was issued.';
 COMMENT ON COLUMN purchase_orders.paid_date IS 'The date we paid for the material in the PO.';
 
 /**
+ * The customer_order_lineitem_statuses table defines each possible status for
+ * a line item in an order. "Sourced", "Canceled", "Substituted", etc.
+ */
+
+CREATE TABLE customer_order_lineitem_statuses (
+	customer_order_lineitem_status_pkey integer PRIMARY KEY,
+	status                              varchar NOT NULL);
+
+COMMENT ON TABLE  customer_order_lineitem_statuses IS 'Lists the possible status flags for a line item in an order.';
+COMMENT ON COLUMN customer_order_lineitem_statuses.customer_order_lineitem_status_pkey IS 'Primary key of customer_order_lineitem_statuses table.';
+COMMENT ON COLUMN customer_order_lineitem_statuses.status IS 'Text description of the line item status.';
+
+/**
+ * The customer_order_lineitems table contains line-item information about
+ * what is in the referenced order. Items will probably be created from a
+ * template in availabilities, but since that table is not necessarily
+ * persistent all the information will be stored here.
+ */
+
+CREATE SEQUENCE customer_order_lineitems_pkey_seq;
+CREATE TABLE customer_order_lineitems (
+	customer_order_lineitem_pkey integer DEFAULT nextval('customer_order_lineitems_pkey_seq'::regclass) PRIMARY KEY,
+	customer_order               integer NOT NULL REFERENCES customer_orders,
+	status                       integer NOT NULL REFERENCES customer_order_lineitem_statuses,
+	substitute                   integer DEFAULT NULL REFERENCES customer_order_lineitems,
+	supplier                     integer REFERENCES business_partners,
+	plant                        integer NOT NULL REFERENCES plants,
+	size_pkey                    integer NOT NULL REFERENCES sizes,
+	units_ordered                integer NOT NULL,
+	price                        money   NOT NULL,
+	contribution                 money   NOT NULL,
+	available_date               date,
+	purchase_order               integer REFERENCES purchase_orders,
+	shipping_load                integer REFERENCES shipping_loads,
+	public_note                  varchar,
+	private_note                 varchar,
+	sort_order                   smallint DEFAULT 0);
+
+COMMENT ON TABLE  customer_order_lineitems IS 'Contains the line-items for orders.';
+COMMENT ON COLUMN customer_order_lineitems.customer_order IS 'References the order the line-item is associated with.';
+COMMENT ON COLUMN customer_order_lineitems.status IS 'References the status of the line-item.';
+COMMENT ON COLUMN customer_order_lineitems.substitute IS 'If status==substituted, then a reference to substitute lineitem. elseif NOT NULL, a reference to the item this is substituting for.';
+COMMENT ON COLUMN customer_order_lineitems.plant IS 'The plant being ordered.';
+COMMENT ON COLUMN customer_order_lineitems.size_pkey IS 'The size of the item being ordered.';
+COMMENT ON COLUMN customer_order_lineitems.units_ordered IS 'The quantity of this item being ordered.';
+COMMENT ON COLUMN customer_order_lineitems.price IS 'The price to use (what the supplier is charging).';
+COMMENT ON COLUMN customer_order_lineitems.contribution IS 'The contribution to us. contribution+price = price to customer.';
+COMMENT ON COLUMN customer_order_lineitems.available_date IS 'The date at which the item is available for us to pick up.';
+COMMENT ON COLUMN customer_order_lineitems.purchase_order IS 'The (current) purchase order we issued on which this item can be found.';
+COMMENT ON COLUMN customer_order_lineitems.shipping_load IS 'The shipping load on which this item went out.';
+COMMENT ON COLUMN customer_order_lineitems.public_note IS 'A comment (visible on reports which go to the customer).';
+COMMENT ON COLUMN customer_order_lineitems.private_note IS 'A comment (not visible on reports which go to the customer).';
+COMMENT ON COLUMN customer_order_lineitems.sort_order IS 'A column on which to sort. A customer submits a randomly ordered list. This helps retain that ordering so the customer isn''t confused when they see the line-item bill.';
+
+/**
  * The purchase_order_lineitem_statuses table defines each possible status for
  * a line item in a purchase order. "Ordered", "Filled", "Paid", etc.
  */
@@ -285,7 +421,7 @@ CREATE TABLE purchase_order_lineitems (
 	customer_order_lineitem      integer NOT NULL REFERENCES customer_order_lineitems,
 	plant                        integer NOT NULL REFERENCES plants,
 	size_pkey                    integer NOT NULL REFERENCES sizes,
-	unit_price                   money NOT NULL,
+	unit_price                   money   NOT NULL,
 	units_ordered                integer NOT NULL,
 	note                         varchar);
 
@@ -298,115 +434,4 @@ COMMENT ON COLUMN purchase_order_lineitems.size_pkey IS 'Size of plant being ord
 COMMENT ON COLUMN purchase_order_lineitems.unit_price IS 'Price per unit of plant.';
 COMMENT ON COLUMN purchase_order_lineitems.units_ordered IS 'The number of units being ordered.';
 COMMENT ON COLUMN purchase_order_lineitems.note IS 'A brief comment about this line item.';
-
-/**
- * the shipping_loads table...
- */
-
-CREATE SEQUENCE shipping_loads_pkey_seq;
-CREATE TABLE shipping_loads (
-
-
-
-
-/**
- * The customer_order_statuses table contains descriptions of each possible
- * order status, e.g. "Ordered", "Confirmed", "Shipped".
- */
-
-CREATE TABLE customer_order_statuses (
-	customer_order_status_pkey integer PRIMARY KEY,
-	status                     varchar NOT NULL);
-
-COMMENT ON TABLE  customer_order_statuses IS 'Descriptions of each order status.';
-COMMENT ON COLUMN customer_order_statuses.customer_order_status_pkey IS 'Primary Key of order_statuses table.';
-COMMENT ON COLUMN customer_order_statuses.status IS 'Order status (in English).';
-
-/**
- * The customer_orders table contains details about orders our customers have placed
- * with us. 
- */
-
-CREATE SEQUENCE customer_orders_pkey_seq;
-CREATE TABLE customer_orders (
-	customer_order_pkey    integer DEFAULT nextval('customer_orders_pkey_seq'::regclass) PRIMARY KEY,
-	customer_order_status  integer NOT NULL REFERENCES customer_order_statuses,
-	color                  integer NOT NULL REFERENCES colors,
-	customer               integer NOT NULL REFERENCES business_partners,
-	order_date             date NOT NULL DEFAULT now(),
-	customer_job_address   text,
-	customer_job_name      varchar,
-	delivery_address       text,
-	delivery_date          time WITH TIME ZONE,
-	order_fulfillment_zone integer REFERENCES geographical_zones,
-	order_destination_zone integer REFERENCES geographical_zones);
-
-COMMENT ON TABLE  customer_orders IS 'Listing of orders our customers have placed with us.';
-COMMENT ON COLUMN customer_orders.customer_order_pkey IS 'Primary key of customer_orders table.';
-COMMENT ON COLUMN customer_orders.color IS 'Ribbon color assigned to order.';
-COMMENT ON COLUMN customer_orders.order_status IS 'Primery key of order_statuses table. Current status of order.'; 
-COMMENT ON COLUMN customer_orders.color IS 'Ribbon color associated with order. Items be tagged with this color.';
-COMMENT ON COLUMN customer_orders.customer IS 'Primary key of business_partners table. This customer ordered this order.';
-COMMENT ON COLUMN customer_orders.order_date IS 'The order was placed on this date.';
-COMMENT ON COLUMN customer_orders.customer_job_address IS 'Where the customer will be using the material.';
-COMMENT ON COLUMN customer_orders.customer_job_name IS 'The customer''s job reference name.';
-COMMENT ON COLUMN customer_orders.delivery_address IS 'The address to deliver the order to.';
-COMMENT ON COLUMN customer_orders.delivery_date IS 'The date and/or time at which to deliver the order.';
-COMMENT ON COLUMN customer_orders.order_fulfillment_zone IS 'The zone in which the order will be filled; where the suppliers are.';
-COMMENT ON COLUMN customer_orders.order_destination_zone IS 'The zone to which the order will be shipped; where the customer wants it.';
-
-/**
- * The customer_order_lineitem_statuses table defines each possible status for
- * a line item in an order. "Sourced", "Canceled", "Substituted", etc.
- */
-
-CREATE TABLE customer_order_lineitem_statuses (
-	customer_order_lineitem_status_pkey integer PRIMARY KEY,
-	status                              varchar NOT NULL);
-
-COMMENT ON TABLE  customer_order_lineitem_statuses IS 'Lists the possible status flags for a line item in an order.';
-COMMENT ON COLUMN customer_order_lineitem_statuses.customer_order_lineitem_status_pkey IS 'Primary key of customer_order_lineitem_statuses table.';
-COMMENT ON COLUMN customer_order_lineitem_statuses.status IS 'Text description of the line item status.';
-
-/**
- * The customer_order_lineitems table contains line-item information about
- * what is in the referenced order. Items will probably be created from a
- * template in availabilities, but since that table is not necessarily
- * persistent all the information will be stored here.
- */
-
-CREATE SEQUENCE customer_order_lineitems_pkey_seq;
-CREATE TABLE customer_order_lineitems (
-	order_lineitem_pkey integer DEFAULT nextval('order_lineitems_pkey_seq'::regclass) PRIMARY KEY,
-	customer_order      integer NOT NULL REFERENCES customer_orders,
-	status              integer NOT NULL REFERENCES order_lineitem_statuses,
-	substitute          integer DEFAULT NULL REFERENCES order_lineitems,
-	supplier            integer REFERENCES business_partners,
-	plant               integer NOT NULL REFERENCES plants,
-	size_pkey           integer NOT NULL REFERENCES sizes,
-	units_ordered       integer NOT NULL,
-	price               money   NOT NULL,
-	contribution        money   NOT NULL,
-	available_date      date,
-	purchase_order      integer REFERENCES purchase_orders,
-	shipping_load       integer REFERENCES shipping_loads,
-	public_note         varchar,
-	private_note        varchar,
-	sort_order          smallint DEFAULT 0);
-
-COMMENT ON TABLE  customer_order_lineitems IS 'Contains the line-items for orders.';
-COMMENT ON COLUMN customer_order_lineitems.customer_order IS 'References the order the line-item is associated with.';
-COMMENT ON COLUMN customer_order_lineitems.status IS 'References the status of the line-item.';
-COMMENT ON COLUMN customer_order_lineitems.substitute IS 'If status==substituted, then a reference to substitute lineitem. elseif NOT NULL, a reference to the item this is substituting for.';
-COMMENT ON COLUMN customer_order_lineitems.plant IS 'The plant being ordered.';
-COMMENT ON COLUMN customer_order_lineitems.size_pkey IS 'The size of the item being ordered.';
-COMMENT ON COLUMN customer_order_lineitems.units_ordered IS 'The quantity of this item being ordered.';
-COMMENT ON COLUMN customer_order_lineitems.price IS 'The price to use (what the supplier is charging).';
-COMMENT ON COLUMN customer_order_lineitems.contribution IS 'The contribution to us. contribution+price = price to customer.';
-COMMENT ON COLUMN customer_order_lineitems.available_date IS 'The date at which the item is available for us to pick up.';
-COMMENT ON COLUMN customer_order_lineitems.purchase_order IS 'The (current) purchase order we issued on which this item can be found.';
-COMMENT ON COLUMN customer_order_lineitems.shipping_load IS 'The shipping load on which this item went out.';
-COMMENT ON COLUMN customer_order_lineitems.public_note IS 'A comment (visible on reports which go to the customer).';
-COMMENT ON COLUMN customer_order_lineitems.private_note IS 'A comment (not visible on reports which go to the customer).';
-COMMENT ON COLUMN customer_order_lineitems.sort_order IS 'A column on which to sort. A customer submits a randomly ordered list. This helps retain that ordering so the customer isn''t confused when they see the line-item bill.';
 
