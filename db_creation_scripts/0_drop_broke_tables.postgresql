@@ -9,9 +9,13 @@
  * `db_name=> \i 0_drop_broke_tables.postgresql`
  */
 
+
 DROP TABLE availabilities;
+DROP TABLE order_lineitems;
+DROP TABLE order_lineitem_statuses;
 DROP TABLE orders;
 DROP SEQUENCE availabilities_pkey_seq;
+DROP SEQUENCE order_lineitems_pkey_seq;
 DROP SEQUENCE orders_pkey_seq;
 
 DROP TABLE contact_details;

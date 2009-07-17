@@ -1,0 +1,31 @@
+
+  Copyright (C) 2009 Reid Vandewiele
+  ALL RIGHTS RESERVED
+
+
+  This file describes some of the conventions used in the Broke project.
+
+______________________________________________________________________________
+
+1. DATABASE Naming Conventions
+
+	Sequences:
+	 Sequence names are lowercase, use underscores to deliniate words, and end
+	 with the suffix "_seq". Primary key sequences are given the same name as
+	 the table appended with the suffix "_pkey_seq".
+
+	Tables:
+	 Table names are lowercase, use underscores to deliniate words, are plural,
+	 and strive for names that are self-explanatory. In the case of more or less
+	 direct parent-child type relationships between tables, the prefix of the 
+	 "parent" table is the singlar version of the "child" name. For example, 
+	 'order_statuses' is a "parent" to 'orders'. statuses is hereby decreed to 
+	 be the correct plural of "status".
+
+	Columns:
+	 Column names are lowercase, use underscores to deliniate words, are
+	 singular, and strive for names that are self-explanatory. Primary keys are
+	 given by the singular version of the table name and appended with "_pkey".
+	 When a column is a foreign key it shall be named in the singular for the 
+	 table it references, unless such a name would be an SQL keyword. In such a
+	 case "_pkey" shall be appended to the column name.
