@@ -9,41 +9,48 @@
  * `db_name=> \i 0_drop_broke_tables.postgresql`
  */
 
+DROP TABLE shipping_stop_lineitems;
+DROP TABLE shipping_stops;
+DROP TABLE shipping_stop_types;
+DROP TABLE purchase_order_lineitems;
 DROP TABLE customer_order_lineitems;
 DROP TABLE customer_order_lineitem_statuses;
 DROP TABLE shipping_loads;
 DROP TABLE shipping_load_statuses;
-DROP TABLE purchase_order_lineitems;
 DROP TABLE purchase_order_lineitem_statuses;
 DROP TABLE purchase_orders;
 DROP TABLE purchase_order_statuses;
 DROP TABLE customer_orders;
 DROP TABLE customer_order_statuses;
 DROP TABLE colors;
-DROP TABLE contact_details;
-DROP TABLE contact_detail_types;
 DROP TABLE contacts;
 DROP TABLE availabilities;
 DROP TABLE business_partners;
 DROP TABLE business_partner_types;
+DROP TABLE contact_details;
+DROP TABLE contact_detail_types;
+DROP TABLE addresses;
 DROP TABLE geographical_zones;
 DROP TABLE plants;
 DROP TABLE sizes;
 DROP TABLE size_classes;
 
+DROP SEQUENCE shipping_stop_lineitems_pkey_seq;
+DROP SEQUENCE shipping_stops_pkey_seq;
 DROP SEQUENCE customer_order_lineitems_pkey_seq;
 DROP SEQUENCE shipping_loads_pkey_seq;
 DROP SEQUENCE purchase_order_lineitems_pkey_seq;
 DROP SEQUENCE purchase_orders_pkey_seq;
 DROP SEQUENCE customer_orders_pkey_seq;
 DROP SEQUENCE colors_pkey_seq;
-DROP SEQUENCE contact_details_pkey_seq;
-DROP SEQUENCE contact_detail_types_pkey_seq;
 DROP SEQUENCE contacts_pkey_seq;
 DROP SEQUENCE availabilities_pkey_seq;
 DROP SEQUENCE business_partners_pkey_seq;
 DROP SEQUENCE business_partner_types_pkey_seq;
-DROP SEQUENCE geographical_zones_pkey_seq;
+DROP SEQUENCE contact_details_pkey_seq;
+DROP SEQUENCE contact_detail_types_pkey_seq;
 DROP SEQUENCE sizes_pkey_seq;
 DROP SEQUENCE size_classes_pkey_seq;
+DROP SEQUENCE addresses_pkey_seq;
+DROP SEQUENCE geographical_zones_pkey_seq;
 DROP SEQUENCE plants_pkey_seq;

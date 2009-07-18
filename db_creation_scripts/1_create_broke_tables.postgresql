@@ -35,12 +35,12 @@ CREATE SEQUENCE sizes_pkey_seq;
 CREATE TABLE sizes (
 	size_pkey         integer DEFAULT nextval('sizes_pkey_seq'::regclass) PRIMARY KEY,
 	size_class        integer NOT NULL REFERENCES size_classes,
-	size_description  varchar NOT NULL);
+	description       varchar NOT NULL);
 
 COMMENT ON TABLE  sizes IS 'Defines the specific sizes.';
 COMMENT ON COLUMN sizes.size_pkey IS 'Primary key for sizes table.';
 COMMENT ON COLUMN sizes.size_class IS 'Reference to size_class.';
-COMMENT ON COLUMN sizes.size_description IS 'Size (in English).';
+COMMENT ON COLUMN sizes.description IS 'Size (in English).';
 
 /**
  * The colors table contains a list of possible ribbon colors with which
@@ -74,20 +74,6 @@ COMMENT ON COLUMN plants.botanical_name IS 'The botanical name of the plant.';
 COMMENT ON COLUMN plants.common_name IS 'The common name of the plant.';
 
 /**
- * The business_partner_types table defines what kind of relationships our 
- * business partners have with us. e.g. "Supplier", "Customer".
- */
-
-CREATE SEQUENCE business_partner_types_pkey_seq;
-CREATE TABLE business_partner_types (
-	business_partner_type_pkey integer DEFAULT nextval('business_partner_types_pkey_seq'::regclass) PRIMARY KEY,
-	type_description           varchar NOT NULL);
-
-COMMENT ON TABLE  business_partner_types IS 'e.g. Supplier, Customer, Truck Broker, etc.';
-COMMENT ON COLUMN business_partner_types.business_partner_type_pkey IS 'Primary key.';
-COMMENT ON COLUMN business_partner_types.type_description IS 'The linquistic description of the type.';
-
-/**
  * The geographical_zones table specifies categories which allow business
  * partners to be referenced by what general area they are located in.
  */
@@ -102,67 +88,42 @@ COMMENT ON COLUMN geographical_zones.geographical_zone_pkey IS 'Primary Key of g
 COMMENT ON COLUMN geographical_zones.zone IS 'The description of the zone.';
 
 /**
- * The business_partners table contains information for companies with which
- * business is done. These could be suppliers, customers, or any other
- * designation which we choose. This being "contact information," the
- * database design here could get as complicated as we want.
+ * The addresses table contains billing/shipping addresses used for 
+ * various purposes.
  */
 
-CREATE SEQUENCE business_partners_pkey_seq;
-CREATE TABLE business_partners (
-	business_partner_pkey   integer DEFAULT nextval('business_partners_pkey_seq'::regclass) PRIMARY KEY,
-	business_partner_type   integer NOT NULL REFERENCES business_partner_types,
-	geographical_zone       integer NOT NULL REFERENCES geographical_zones,
-	business                varchar NOT NULL,
-	location_street_address varchar NOT NULL,
-	location_city           varchar NOT NULL,
-	location_state          varchar NOT NULL,
-	location_zipcode        varchar NOT NULL,
-	billing_street_address  varchar NOT NULL,
-	billing_city            varchar NOT NULL,
-	billing_state           varchar NOT NULL,
-	billing_zipcode         varchar NOT NULL,
-	fax                     varchar,
-	phone                   varchar,
-	email                   varchar);
+CREATE SEQUENCE addresses_pkey_seq;
+CREATE TABLE addresses (
+	address_pkey      integer DEFAULT nextval('addresses_pkey_seq'::regclass) PRIMARY KEY,
+	address           varchar,
+	city              varchar,
+	state             varchar,
+	zipcode           varchar,
+	country           varchar,
+	geographical_zone integer NOT NULL REFERENCES geographical_zones);
 
-CREATE INDEX business_partners_type ON business_partners (business_partner_type);
-
-COMMENT ON TABLE  business_partners IS 'Customers, suppliers, companies with whom business is done.';
-COMMENT ON COLUMN business_partners.business_partner_pkey IS 'Primary key of business_partners table.';
-COMMENT ON COLUMN business_partners.business_partner_type IS 'Type of partner; references business_partner_types.';
-COMMENT ON COLUMN business_partners.geographical_zone IS 'Zone this partner is located in (references geographical_zones).';
-COMMENT ON COLUMN	business_partners.business IS 'Business name of partner.';
-COMMENT ON COLUMN business_partners.location_street_address IS 'Street address of partner.';
-COMMENT ON COLUMN business_partners.location_city IS 'City in which partner is located.';
-COMMENT ON COLUMN business_partners.location_state IS 'State in which partner is located.';
-COMMENT ON COLUMN business_partners.location_zipcode IS 'Zipcode of partner.';
-COMMENT ON COLUMN business_partners.billing_street_address IS 'Billing address of partner.';
-COMMENT ON COLUMN business_partners.billing_city IS 'City in which partner is billed.';
-COMMENT ON COLUMN business_partners.billing_state IS 'State in which partner is billed.';
-COMMENT ON COLUMN business_partners.billing_zipcode IS 'Billing zipcode of partner.';
-COMMENT ON COLUMN business_partners.fax IS 'General fax number of partner.';
-COMMENT ON COLUMN business_partners.phone IS 'General phone number of partner.';
-COMMENT ON COLUMN business_partners.email IS 'General email address of partner.';
+COMMENT ON TABLE  addresses IS 'Contains a listing of all the plants we know about.';
+COMMENT ON COLUMN addresses.address_pkey IS 'The Primary Key for the addresses table.';
+COMMENT ON COLUMN addresses.address IS 'The street address.';
+COMMENT ON COLUMN addresses.city IS 'The city.';
+COMMENT ON COLUMN addresses.state IS 'The state.';
+COMMENT ON COLUMN addresses.zipcode IS 'The zipcode.';
+COMMENT ON COLUMN addresses.country IS 'The country.';
+COMMENT ON COLUMN addresses.geographical_zone IS 'The area in which the address is located.';
 
 /**
- * The contacts table holds information on individuals working for/with a
- * company from the business_partners table.
+ * The business_partner_types table defines what kind of relationships our 
+ * business partners have with us. e.g. "Supplier", "Customer".
  */
 
-CREATE SEQUENCE contacts_pkey_seq;
-CREATE TABLE contacts (
-	contact_pkey     integer DEFAULT nextval('contacts_pkey_seq'::regclass) PRIMARY KEY,
-	business_partner integer NOT NULL REFERENCES business_partners,
-	first_name       varchar NOT NULL,
-	last_name        varchar NOT NULL,
-	note             varchar);
+CREATE SEQUENCE business_partner_types_pkey_seq;
+CREATE TABLE business_partner_types (
+	business_partner_type_pkey integer DEFAULT nextval('business_partner_types_pkey_seq'::regclass) PRIMARY KEY,
+	description                varchar NOT NULL);
 
-COMMENT ON TABLE  contacts IS 'People we interact with (associated with a business partner).';
-COMMENT ON COLUMN contacts.business_partner IS 'The business partner this contact is associated with.';
-COMMENT ON COLUMN contacts.first_name IS 'The contact''s first name.';
-COMMENT ON COLUMN contacts.last_name IS 'The contact''s last name.';
-COMMENT ON COLUMN contacts.note IS 'Any comments about the contact, e.g. "field", "office".';
+COMMENT ON TABLE  business_partner_types IS 'e.g. Supplier, Customer, Truck Broker, etc.';
+COMMENT ON COLUMN business_partner_types.business_partner_type_pkey IS 'Primary key.';
+COMMENT ON COLUMN business_partner_types.description IS 'The linquistic description of the type.';
 
 /**
  * The contact_detail_types table lists the kinds of contact details known.
@@ -193,6 +154,56 @@ COMMENT ON TABLE  contact_details IS 'Contact information associated with contac
 COMMENT ON COLUMN contact_details.contact_detail_pkey IS 'Primary Key of contact_details table.';
 COMMENT ON COLUMN contact_details.contact_detail IS 'Specifics. Phone number, e-mail address, etc.';
 COMMENT ON COLUMN contact_details.note          IS 'Comment about this contact info, e.g. "mobile", "business".';
+
+/**
+ * The business_partners table contains information for companies with which
+ * business is done. These could be suppliers, customers, or any other
+ * designation which we choose. This being "contact information," the
+ * database design here could get as complicated as we want.
+ */
+
+CREATE SEQUENCE business_partners_pkey_seq;
+CREATE TABLE business_partners (
+	business_partner_pkey   integer DEFAULT nextval('business_partners_pkey_seq'::regclass) PRIMARY KEY,
+	business_partner_type   integer NOT NULL REFERENCES business_partner_types,
+	business_name           varchar NOT NULL,
+	location_address        integer NOT NULL REFERENCES addresses,
+	billing_address         integer NOT NULL REFERENCES addresses,
+	fax                     integer REFERENCES contact_details,
+	phone                   integer REFERENCES contact_details,
+	email                   integer REFERENCES contact_details);
+
+CREATE INDEX business_partners_type ON business_partners (business_partner_type);
+
+COMMENT ON TABLE  business_partners IS 'Customers, suppliers, companies with whom business is done.';
+COMMENT ON COLUMN business_partners.business_partner_pkey IS 'Primary key of business_partners table.';
+COMMENT ON COLUMN business_partners.business_partner_type IS 'Type of partner; references business_partner_types.';
+COMMENT ON COLUMN	business_partners.business_name IS 'Business name of partner.';
+COMMENT ON COLUMN business_partners.location_address IS 'Street address of partner.';
+COMMENT ON COLUMN business_partners.billing_address IS 'Billing address of partner.';
+COMMENT ON COLUMN business_partners.fax IS 'General fax number of partner.';
+COMMENT ON COLUMN business_partners.phone IS 'General phone number of partner.';
+COMMENT ON COLUMN business_partners.email IS 'General email address of partner.';
+
+/**
+ * The contacts table holds information on individuals working for/with a
+ * company from the business_partners table.
+ */
+
+CREATE SEQUENCE contacts_pkey_seq;
+CREATE TABLE contacts (
+	contact_pkey     integer DEFAULT nextval('contacts_pkey_seq'::regclass) PRIMARY KEY,
+	business_partner integer NOT NULL REFERENCES business_partners,
+	first_name       varchar NOT NULL,
+	last_name        varchar NOT NULL,
+	title            varchar,
+	note             varchar);
+
+COMMENT ON TABLE  contacts IS 'People we interact with (associated with a business partner).';
+COMMENT ON COLUMN contacts.business_partner IS 'The business partner this contact is associated with.';
+COMMENT ON COLUMN contacts.first_name IS 'The contact''s first name.';
+COMMENT ON COLUMN contacts.last_name IS 'The contact''s last name.';
+COMMENT ON COLUMN contacts.note IS 'Any comments about the contact, e.g. "field", "office".';
 
 /**
  * The availabilities table contains information about what materials we
@@ -434,4 +445,52 @@ COMMENT ON COLUMN purchase_order_lineitems.size_pkey IS 'Size of plant being ord
 COMMENT ON COLUMN purchase_order_lineitems.unit_price IS 'Price per unit of plant.';
 COMMENT ON COLUMN purchase_order_lineitems.units_ordered IS 'The number of units being ordered.';
 COMMENT ON COLUMN purchase_order_lineitems.note IS 'A brief comment about this line item.';
+
+/**
+ * The shipping_stop_types table defines what kinds of shipping stops there
+ * are. e.g. Picks, Drops.
+ */
+
+CREATE TABLE shipping_stop_types (
+	shipping_stop_type_pkey integer PRIMARY KEY,
+	description             varchar NOT NULL);
+
+COMMENT ON TABLE  shipping_stop_types IS 'Defines the kinds of shipping stops.';
+COMMENT ON COLUMN shipping_stop_types.shipping_stop_type_pkey IS 'Primary key of shipping_stop_types table.'; 
+COMMENT ON COLUMN shipping_stop_types.description IS 'Written description of the type of stop.';
+
+
+/**
+ * The shipping_picks table contains a listing of all the "picks" or pickup
+ * locations for each load. A load may have from 1 to around 5 picks on 
+ * average.
+ */
+
+CREATE SEQUENCE shipping_stops_pkey_seq;
+CREATE TABLE shipping_stops (
+	shipping_stop_pkey integer DEFAULT nextval('shipping_stops_pkey_seq'::regclass) PRIMARY KEY,
+	shipping_stop_type integer NOT NULL REFERENCES shipping_stop_types,
+	shipping_load      integer NOT NULL REFERENCES shipping_loads,
+	address            integer NOT NULL REFERENCES addresses,
+	sort_order         smallint NOT NULL DEFAULT 0);
+
+COMMENT ON TABLE  shipping_stops IS 'Listing of all the stops for each load.';
+COMMENT ON COLUMN shipping_stops.shipping_stop_pkey IS 'Primary key for shipping_stops table.';
+COMMENT ON COLUMN shipping_stops.shipping_load IS 'The load this pick is a part of.';
+COMMENT ON COLUMN shipping_stops.sort_order IS 'Provides ordering capability for picks.';
+
+/**
+ * The shipping_stops_lineitems table defines the materials that are moved
+ * during a shipping stop. 
+ */
+
+CREATE SEQUENCE shipping_stop_lineitems_pkey_seq;
+CREATE TABLE shipping_stop_lineitems (
+	shipping_stop_lineitem_pkey integer DEFAULT nextval('shipping_stop_lineitems_pkey_seq'::regclass) PRIMARY KEY,
+	shipping_stop               integer NOT NULL REFERENCES shipping_stops,
+	item                        integer NOT NULL REFERENCES customer_order_lineitems);
+
+COMMENT ON TABLE  shipping_stop_lineitems IS 'Items affected by a stop.';
+COMMENT ON COLUMN shipping_stop_lineitems.shipping_stop_lineitem_pkey IS 'Primary key.';
+COMMENT ON COLUMN shipping_stop_lineitems.item IS 'Item from customer order that is affected.';
 
