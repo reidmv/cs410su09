@@ -1,7 +1,25 @@
+/*==========================================================================*/
+/* Copyright (C) 2009 Reid Vandewiele                                       */
+/* ALL RIGHTS RESERVED                                                      */
+/*                                                                          */
+/* This file is part of Broke.                                              */
+/*                                                                          */
+/* Broke is free software: you can redistribute it and/or modify it under   */
+/* the terms of the GNU General Public License as published by the Free     */
+/* Software Foundation, either version 3 of the License, or (at your        */
+/* option) any later version.                                               */
+/*                                                                          */
+/* Broke is distributed in the hope that it will be useful, but WITHOUT ANY */
+/* WARRANTY; without even the implied warranty of MERCHANTABILITY or        */
+/* FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License    */
+/* for more details.                                                        */
+/*                                                                          */
+/* You should have received a copy of the GNU General Public License along  */
+/* with Broke in a file named COPYING.  If not, see                         */
+/* <http://www.gnu.org/licenses/>.                                          */
+/*==========================================================================*/
+
 /**
- * Copyright (C) 2009 Reid Vandewiele
- * ALL RIGHTS RESERVED
- *
  * To create the Broke database, run this file through psql, e.g.
  * `psql -f 1_create_main_tables.postgresql $DB $USER` 
  *
@@ -294,7 +312,7 @@ CREATE TABLE customer_orders (
 	color                 integer NOT NULL REFERENCES colors,
 	customer              integer NOT NULL REFERENCES business_partners,
 	order_date            date NOT NULL DEFAULT now(),
-	customer_job_address  text,
+	customer_job_address  integer REFERENCES addresses,
 	customer_job_name     varchar,
 	delivery_address      text,
 	delivery_date         time WITH TIME ZONE,
@@ -493,4 +511,135 @@ CREATE TABLE shipping_stop_lineitems (
 COMMENT ON TABLE  shipping_stop_lineitems IS 'Items affected by a stop.';
 COMMENT ON COLUMN shipping_stop_lineitems.shipping_stop_lineitem_pkey IS 'Primary key.';
 COMMENT ON COLUMN shipping_stop_lineitems.item IS 'Item from customer order that is affected.';
+
+/**
+ * The invoice_statuses table defines what statuses a given invoice
+ * can have.
+ */
+
+CREATE TABLE invoice_statuses (
+	invoice_status_pkey integer PRIMARY KEY,
+	status              varchar NOT NULL);
+
+COMMENT ON TABLE  invoice_statuses IS 'Possible statuses for invoices.';
+COMMENT ON COLUMN invoice_statuses.invoice_status_pkey IS 'Primary key of invoice_statuses table.';
+COMMENT ON COLUMN invoice_statuses.status IS 'Text description of status.';
+
+/**
+ * The invoices table contains the invoices that we have issued to our
+ * customers.
+ */
+
+CREATE SEQUENCE invoices_pkey_seq;
+CREATE TABLE invoices (
+	invoice_pkey     integer  DEFAULT nextval('invoices_pkey_seq'::regclass) PRIMARY KEY,
+	customer_order   integer  NOT NULL REFERENCES customer_orders,
+	status           integer  NOT NULL REFERENCES invoice_statuses,
+	issue_date       date     NOT NULL DEFAULT now(),
+	tag              smallint NOT NULL);
+
+COMMENT ON TABLE  invoices IS 'Invoices that we''ve issued to our customers.';
+COMMENT ON COLUMN invoices.invoice_pkey IS 'Primary key of invoices table.';
+COMMENT ON COLUMN invoices.customer_order IS 'Reference to customer order being invoiced.';
+COMMENT ON COLUMN invoices.status IS 'Current status of invoice.';
+COMMENT ON COLUMN invoices.issue_date IS 'The date on which the invoice was issued.';
+COMMENT ON COLUMN invoices.tag IS 'Helps identify an invoice to a customer; e.g. "ORDER/TAG".';
+
+/**
+ * The invoice_lineitems table references what customer_order_lineitems belong
+ * to a given invoice.
+ */
+
+CREATE SEQUENCE invoice_lineitems_pkey_seq;
+CREATE TABLE invoice_lineitems (
+	invoice_lineitem_pkey   integer DEFAULT nextval('invoice_lineitems_pkey_seq'::regclass) PRIMARY KEY,
+	invoice                 integer NOT NULL REFERENCES invoices,
+	customer_order_lineitem integer NOT NULL REFERENCES customer_order_lineitems);
+	
+COMMENT ON TABLE  invoice_lineitems IS 'Lineitems for the invoices.';
+COMMENT ON COLUMN invoice_lineitems.invoice_lineitem_pkey IS 'Primary key of invoice_lineitems table.';
+COMMENT ON COLUMN invoice_lineitems.invoice IS 'The invoice this lineitem belongs to.';
+COMMENT ON COLUMN invoice_lineitems.customer_order_lineitem IS 'The customer order lineitem being invoiced.';
+
+/**
+ * The pickup_lists table holds lists of material to pick up.
+ */
+
+CREATE SEQUENCE pickup_lists_pkey_seq;
+CREATE TABLE pickup_lists (
+	pickup_list_pkey integer DEFAULT nextval('pickup_lists_pkey_seq'::regclass) PRIMARY KEY,
+	pickup_date      date    NOT NULL default now());
+
+COMMENT ON TABLE  pickup_lists IS 'A list of items to go out and retrieve from suppliers.';
+COMMENT ON COLUMN pickup_lists.pickup_date IS 'The date to pick this stuff up.';
+
+/**
+ * The pickup_list_lineitems table holds the lineitems for a pickup list.
+ */
+
+CREATE SEQUENCE pickup_list_lineitems_pkey_seq;
+CREATE TABLE pickup_list_lineitems (
+	pickup_list_lineitem_pkey integer DEFAULT nextval('pickup_list_lineitems_pkey_seq'::regclass) PRIMARY KEY,
+	pickup_list               integer NOT NULL REFERENCES pickup_lists,
+	customer_order_lineitem   integer NOT NULL REFERENCES customer_order_lineitems);
+
+COMMENT ON TABLE  pickup_list_lineitems IS 'Lineitems for pickup lists.';
+COMMENT ON COLUMN pickup_list_lineitems.pickup_list_lineitem_pkey IS 'Primary key of pickup_list_lineitems table.';
+COMMENT ON COLUMN pickup_list_lineitems.pickup_list IS 'The pickup list this lineitem is on.';
+COMMENT ON COLUMN pickup_list_lineitems.customer_order_lineitem IS 'The customer order lineitem to pickup.';
+
+/**
+ * The inquery_messages table holds a list of messages that may be used on
+ * material inqueries being sent out.
+ */ 
+
+CREATE SEQUENCE inquery_messages_pkey_seq;
+CREATE TABLE inquery_messages (
+	inquery_message_pkey integer DEFAULT nextval('inquery_messages_pkey_seq'::regclass) PRIMARY KEY,
+	message              varchar NOT NULL);
+
+COMMENT ON TABLE  inquery_messages IS 'Messages that can be applied to outgoing inqueries.';
+COMMENT ON COLUMN inquery_messages.message IS 'Text message to use.';
+
+/**
+ * The inqueries table holds material inquery lists that are generated and 
+ * sent to suppliers, basically asking "do you have this, if so, for what
+ * price?"
+ */
+
+CREATE SEQUENCE inqueries_pkey_seq;
+CREATE TABLE inqueries (
+	inquery_pkey    integer DEFAULT nextval('inqueries_pkey_seq'::regclass) PRIMARY KEY,
+	creation_date   date    DEFAULT now(),
+	inquery_message integer NOT NULL REFERENCES inquery_messages,
+	inquery_issued  boolean NOT NULL DEFAULT false);
+
+COMMENT ON TABLE  inqueries IS 'Material inqueries we''ve sent to our suppliers.';
+COMMENT ON COLUMN inqueries.inquery_pkey IS 'Primary key of inqueries table.';
+COMMENT ON COLUMN inqueries.creation_date IS 'Date inquery was created.';
+COMMENT ON COLUMN inqueries.inquery_message IS 'Message to show on inquery.';
+COMMENT ON COLUMN inqueries.inquery_issued IS 'True if inquery has been sent to suppliers.';
+
+/**
+ * The inqueries_lineitems table lists the lineitem components of an inquery.
+ */
+
+CREATE SEQUENCE inquery_lineitems_pkey_seq;
+CREATE TABLE inquery_lineitems (
+	inquery_lineitem_pkey   integer DEFAULT nextval('inquery_lineitems_pkey_seq'::regclass) PRIMARY KEY,
+	inquery                 integer NOT NULL REFERENCES inqueries,
+	plant                   integer NOT NULL REFERENCES plants,
+	size_pkey               integer NOT NULL REFERENCES sizes,
+	units_available         integer,
+	customer_order_lineitem integer REFERENCES customer_order_lineitems,
+	note                    varchar);
+
+COMMENT ON TABLE  inquery_lineitems IS 'Lineitem components of inqueries.';
+COMMENT ON COLUMN inquery_lineitems.inquery_lineitem_pkey IS 'The inquery this lineitem belongs to.';
+COMMENT ON COLUMN inquery_lineitems.plant Is 'The material being inquired about.';
+COMMENT ON COLUMN inquery_lineitems.size_pkey IS 'The size of the material.';
+COMMENT ON COLUMN inquery_lineitems.units_available IS 'How many are being inquired about?';
+COMMENT ON COLUMN inquery_lineitems.customer_order_lineitem IS 'A customer order lineitem upon which this inquery is based.';
+COMMENT ON COLUMN inquery_lineitems.note IS 'A note about this lineitem.';
+
 

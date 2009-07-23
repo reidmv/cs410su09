@@ -1,7 +1,25 @@
+/*==========================================================================*/
+/* Copyright (C) 2009 Reid Vandewiele                                       */
+/* ALL RIGHTS RESERVED                                                      */
+/*                                                                          */
+/* This file is part of Broke.                                              */
+/*                                                                          */
+/* Broke is free software: you can redistribute it and/or modify it under   */
+/* the terms of the GNU General Public License as published by the Free     */
+/* Software Foundation, either version 3 of the License, or (at your        */
+/* option) any later version.                                               */
+/*                                                                          */
+/* Broke is distributed in the hope that it will be useful, but WITHOUT ANY */
+/* WARRANTY; without even the implied warranty of MERCHANTABILITY or        */
+/* FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License    */
+/* for more details.                                                        */
+/*                                                                          */
+/* You should have received a copy of the GNU General Public License along  */
+/* with Broke in a file named COPYING.  If not, see                         */
+/* <http://www.gnu.org/licenses/>.                                          */
+/*==========================================================================*/
+
 /**
- * Copyright (C) 2009 Reid Vandewiele
- * ALL RIGHTS RESERVED
- *
  * To remove all elements of the Broke database, run this file through psql:
  * `psql -f 0_drop_broke_tables.postgresql $DB $USER` 
  *
@@ -9,6 +27,14 @@
  * `db_name=> \i 0_drop_broke_tables.postgresql`
  */
 
+DROP TABLE inquery_lineitems;
+DROP TABLE inqueries;
+DROP TABLE inquery_messages;
+DROP TABLE pickup_list_lineitems;
+DROP TABLE pickup_lists;
+DROP TABLE invoice_lineitems;
+DROP TABLE invoices;
+DROP TABLE invoice_statuses;
 DROP TABLE shipping_stop_lineitems;
 DROP TABLE shipping_stops;
 DROP TABLE shipping_stop_types;
@@ -35,6 +61,13 @@ DROP TABLE plants;
 DROP TABLE sizes;
 DROP TABLE size_classes;
 
+DROP SEQUENCE inquery_lineitems_pkey_seq;
+DROP SEQUENCE inqueries_pkey_seq;
+DROP SEQUENCE inquery_messages_pkey_seq;
+DROP SEQUENCE pickup_list_lineitems_pkey_seq;
+DROP SEQUENCE pickup_lists_pkey_seq;
+DROP SEQUENCE invoice_lineitems_pkey_seq;
+DROP SEQUENCE invoices_pkey_seq;
 DROP SEQUENCE shipping_stop_lineitems_pkey_seq;
 DROP SEQUENCE shipping_stops_pkey_seq;
 DROP SEQUENCE customer_order_lineitems_pkey_seq;
