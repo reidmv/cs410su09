@@ -1,0 +1,539 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<database name="reidmv" schema="public" type="PostgreSQL - 8.3.3">
+   <tables>
+      <table name="addresses" numRows="0" remarks="Contains a listing of all the plants we know about." schema="public" type="TABLE">
+         <column autoUpdated="true" defaultValue="nextval('addresses_pkey_seq'::regclass)" digits="0" id="0" name="address_pkey" nullable="false" remarks="The Primary Key for the addresses table." size="10" type="serial">
+            <child column="billing_address" foreignKey="business_partners_billing_address_fkey" implied="false" onDeleteCascade="false" table="business_partners"/>
+            <child column="location_address" foreignKey="business_partners_location_address_fkey" implied="false" onDeleteCascade="false" table="business_partners"/>
+            <child column="customer_job_address" foreignKey="customer_orders_customer_job_address_fkey" implied="false" onDeleteCascade="false" table="customer_orders"/>
+            <child column="address" foreignKey="shipping_stops_address_fkey" implied="false" onDeleteCascade="false" table="shipping_stops"/>
+         </column>
+         <column autoUpdated="false" digits="0" id="1" name="address" nullable="true" remarks="The street address." size="2147483647" type="varchar"/>
+         <column autoUpdated="false" digits="0" id="2" name="city" nullable="true" remarks="The city." size="2147483647" type="varchar"/>
+         <column autoUpdated="false" digits="0" id="3" name="state" nullable="true" remarks="The state." size="2147483647" type="varchar"/>
+         <column autoUpdated="false" digits="0" id="4" name="zipcode" nullable="true" remarks="The zipcode." size="2147483647" type="varchar"/>
+         <column autoUpdated="false" digits="0" id="5" name="country" nullable="true" remarks="The country." size="2147483647" type="varchar"/>
+         <column autoUpdated="false" digits="0" id="6" name="geographical_zone" nullable="false" remarks="The area in which the address is located." size="10" type="int4">
+            <parent column="geographical_zone_pkey" foreignKey="addresses_geographical_zone_fkey" implied="false" onDeleteCascade="false" table="geographical_zones"/>
+         </column>
+         <primaryKey column="address_pkey" sequenceNumberInPK="1"/>
+         <index name="addresses_pkey" unique="true">
+            <column ascending="true" name="address_pkey"/>
+         </index>
+      </table>
+      <table name="availabilities" numRows="0" remarks="Presumed material availabilities." schema="public" type="TABLE">
+         <column autoUpdated="true" defaultValue="nextval('availabilities_pkey_seq'::regclass)" digits="0" id="0" name="availability_pkey" nullable="false" remarks="Primary key of availabilities table." size="10" type="serial"/>
+         <column autoUpdated="false" digits="0" id="1" name="plant" nullable="false" remarks="Primary key of plants table." size="10" type="int4">
+            <parent column="plant_pkey" foreignKey="availabilities_plant_fkey" implied="false" onDeleteCascade="false" table="plants"/>
+         </column>
+         <column autoUpdated="false" digits="0" id="2" name="size_pkey" nullable="false" remarks="Primary key of sizes table. Size of item." size="10" type="int4">
+            <parent column="size_pkey" foreignKey="availabilities_size_pkey_fkey" implied="false" onDeleteCascade="false" table="sizes"/>
+         </column>
+         <column autoUpdated="false" digits="0" id="3" name="supplier" nullable="false" remarks="Primary key of business_partners table; should be of type &quot;supplier&quot;." size="10" type="int4">
+            <parent column="business_partner_pkey" foreignKey="availabilities_supplier_fkey" implied="false" onDeleteCascade="false" table="business_partners"/>
+         </column>
+         <column autoUpdated="false" digits="0" id="4" name="units_available" nullable="false" remarks="The number of units available from $SUPPLIER at $PRICE." size="10" type="int4"/>
+         <column autoUpdated="false" digits="0" id="5" name="price" nullable="false" remarks="The price per unit of $PLANT from $SUPPLIER on $DATE." size="2147483647" type="money"/>
+         <column autoUpdated="false" defaultValue="now()" digits="0" id="6" name="availability_date" nullable="false" remarks="The date this information was known current." size="13" type="date"/>
+         <column autoUpdated="false" digits="0" id="7" name="note" nullable="true" remarks="A comment about this particular availability." size="2147483647" type="varchar"/>
+         <primaryKey column="availability_pkey" sequenceNumberInPK="1"/>
+         <index name="availabilities_pkey" unique="true">
+            <column ascending="true" name="availability_pkey"/>
+         </index>
+      </table>
+      <table name="business_partner_types" numRows="0" remarks="e.g. Supplier, Customer, Truck Broker, etc." schema="public" type="TABLE">
+         <column autoUpdated="true" defaultValue="nextval('business_partner_types_pkey_seq'::regclass)" digits="0" id="0" name="business_partner_type_pkey" nullable="false" remarks="Primary key." size="10" type="serial">
+            <child column="business_partner_type" foreignKey="business_partners_business_partner_type_fkey" implied="false" onDeleteCascade="false" table="business_partners"/>
+         </column>
+         <column autoUpdated="false" digits="0" id="1" name="description" nullable="false" remarks="The linquistic description of the type." size="2147483647" type="varchar"/>
+         <primaryKey column="business_partner_type_pkey" sequenceNumberInPK="1"/>
+         <index name="business_partner_types_pkey" unique="true">
+            <column ascending="true" name="business_partner_type_pkey"/>
+         </index>
+      </table>
+      <table name="business_partners" numRows="0" remarks="Customers, suppliers, companies with whom business is done." schema="public" type="TABLE">
+         <column autoUpdated="true" defaultValue="nextval('business_partners_pkey_seq'::regclass)" digits="0" id="0" name="business_partner_pkey" nullable="false" remarks="Primary key of business_partners table." size="10" type="serial">
+            <child column="supplier" foreignKey="availabilities_supplier_fkey" implied="false" onDeleteCascade="false" table="availabilities"/>
+            <child column="business_partner" foreignKey="contacts_business_partner_fkey" implied="false" onDeleteCascade="false" table="contacts"/>
+            <child column="supplier" foreignKey="customer_order_lineitems_supplier_fkey" implied="false" onDeleteCascade="false" table="customer_order_lineitems"/>
+            <child column="customer" foreignKey="customer_orders_customer_fkey" implied="false" onDeleteCascade="false" table="customer_orders"/>
+            <child column="supplier" foreignKey="purchase_orders_supplier_fkey" implied="false" onDeleteCascade="false" table="purchase_orders"/>
+            <child column="broker" foreignKey="shipping_loads_broker_fkey" implied="false" onDeleteCascade="false" table="shipping_loads"/>
+            <child column="carrier" foreignKey="shipping_loads_carrier_fkey" implied="false" onDeleteCascade="false" table="shipping_loads"/>
+         </column>
+         <column autoUpdated="false" digits="0" id="1" name="business_partner_type" nullable="false" remarks="Type of partner; references business_partner_types." size="10" type="int4">
+            <parent column="business_partner_type_pkey" foreignKey="business_partners_business_partner_type_fkey" implied="false" onDeleteCascade="false" table="business_partner_types"/>
+         </column>
+         <column autoUpdated="false" digits="0" id="2" name="business_name" nullable="false" remarks="Business name of partner." size="2147483647" type="varchar"/>
+         <column autoUpdated="false" digits="0" id="3" name="location_address" nullable="false" remarks="Street address of partner." size="10" type="int4">
+            <parent column="address_pkey" foreignKey="business_partners_location_address_fkey" implied="false" onDeleteCascade="false" table="addresses"/>
+         </column>
+         <column autoUpdated="false" digits="0" id="4" name="billing_address" nullable="false" remarks="Billing address of partner." size="10" type="int4">
+            <parent column="address_pkey" foreignKey="business_partners_billing_address_fkey" implied="false" onDeleteCascade="false" table="addresses"/>
+         </column>
+         <column autoUpdated="false" digits="0" id="5" name="fax" nullable="true" remarks="General fax number of partner." size="10" type="int4">
+            <parent column="contact_detail_pkey" foreignKey="business_partners_fax_fkey" implied="false" onDeleteCascade="false" table="contact_details"/>
+         </column>
+         <column autoUpdated="false" digits="0" id="6" name="phone" nullable="true" remarks="General phone number of partner." size="10" type="int4">
+            <parent column="contact_detail_pkey" foreignKey="business_partners_phone_fkey" implied="false" onDeleteCascade="false" table="contact_details"/>
+         </column>
+         <column autoUpdated="false" digits="0" id="7" name="email" nullable="true" remarks="General email address of partner." size="10" type="int4">
+            <parent column="contact_detail_pkey" foreignKey="business_partners_email_fkey" implied="false" onDeleteCascade="false" table="contact_details"/>
+         </column>
+         <primaryKey column="business_partner_pkey" sequenceNumberInPK="1"/>
+         <index name="business_partners_pkey" unique="true">
+            <column ascending="true" name="business_partner_pkey"/>
+         </index>
+         <index name="business_partners_type" unique="false">
+            <column ascending="true" name="business_partner_type"/>
+         </index>
+      </table>
+      <table name="colors" numRows="0" remarks="Contains possible ribbon colors for orders." schema="public" type="TABLE">
+         <column autoUpdated="true" defaultValue="nextval('colors_pkey_seq'::regclass)" digits="0" id="0" name="color_pkey" nullable="false" remarks="Primary key for colors table." size="10" type="serial">
+            <child column="color" foreignKey="customer_orders_color_fkey" implied="false" onDeleteCascade="false" table="customer_orders"/>
+         </column>
+         <column autoUpdated="false" digits="0" id="1" name="color" nullable="false" remarks="Ribbon color." size="2147483647" type="varchar"/>
+         <primaryKey column="color_pkey" sequenceNumberInPK="1"/>
+         <index name="colors_pkey" unique="true">
+            <column ascending="true" name="color_pkey"/>
+         </index>
+      </table>
+      <table name="contact_detail_types" numRows="0" remarks="Type of contact detail, e.g. &quot;phone&quot;, &quot;email&quot;." schema="public" type="TABLE">
+         <column autoUpdated="true" defaultValue="nextval('contact_detail_types_pkey_seq'::regclass)" digits="0" id="0" name="contact_detail_type_pkey" nullable="false" remarks="Primary Key of contact_detail_type table." size="10" type="serial">
+            <child column="contact_detail_type" foreignKey="contact_details_contact_detail_type_fkey" implied="false" onDeleteCascade="false" table="contact_details"/>
+         </column>
+         <column autoUpdated="false" digits="0" id="1" name="detail_type" nullable="false" remarks="Type of contact detail (in English)." size="2147483647" type="varchar"/>
+         <primaryKey column="contact_detail_type_pkey" sequenceNumberInPK="1"/>
+         <index name="contact_detail_types_pkey" unique="true">
+            <column ascending="true" name="contact_detail_type_pkey"/>
+         </index>
+      </table>
+      <table name="contact_details" numRows="0" remarks="Contact information associated with contacts." schema="public" type="TABLE">
+         <column autoUpdated="true" defaultValue="nextval('contact_details_pkey_seq'::regclass)" digits="0" id="0" name="contact_detail_pkey" nullable="false" remarks="Primary Key of contact_details table." size="10" type="serial">
+            <child column="email" foreignKey="business_partners_email_fkey" implied="false" onDeleteCascade="false" table="business_partners"/>
+            <child column="fax" foreignKey="business_partners_fax_fkey" implied="false" onDeleteCascade="false" table="business_partners"/>
+            <child column="phone" foreignKey="business_partners_phone_fkey" implied="false" onDeleteCascade="false" table="business_partners"/>
+         </column>
+         <column autoUpdated="false" digits="0" id="1" name="contact_detail_type" nullable="false" remarks="" size="10" type="int4">
+            <parent column="contact_detail_type_pkey" foreignKey="contact_details_contact_detail_type_fkey" implied="false" onDeleteCascade="false" table="contact_detail_types"/>
+         </column>
+         <column autoUpdated="false" digits="0" id="2" name="contact_detail" nullable="false" remarks="Specifics. Phone number, e-mail address, etc." size="2147483647" type="varchar"/>
+         <column autoUpdated="false" digits="0" id="3" name="note" nullable="true" remarks="Comment about this contact info, e.g. &quot;mobile&quot;, &quot;business&quot;." size="2147483647" type="varchar"/>
+         <primaryKey column="contact_detail_pkey" sequenceNumberInPK="1"/>
+         <index name="contact_details_pkey" unique="true">
+            <column ascending="true" name="contact_detail_pkey"/>
+         </index>
+      </table>
+      <table name="contacts" numRows="0" remarks="People we interact with (associated with a business partner)." schema="public" type="TABLE">
+         <column autoUpdated="true" defaultValue="nextval('contacts_pkey_seq'::regclass)" digits="0" id="0" name="contact_pkey" nullable="false" remarks="" size="10" type="serial"/>
+         <column autoUpdated="false" digits="0" id="1" name="business_partner" nullable="false" remarks="The business partner this contact is associated with." size="10" type="int4">
+            <parent column="business_partner_pkey" foreignKey="contacts_business_partner_fkey" implied="false" onDeleteCascade="false" table="business_partners"/>
+         </column>
+         <column autoUpdated="false" digits="0" id="2" name="first_name" nullable="false" remarks="The contact's first name." size="2147483647" type="varchar"/>
+         <column autoUpdated="false" digits="0" id="3" name="last_name" nullable="false" remarks="The contact's last name." size="2147483647" type="varchar"/>
+         <column autoUpdated="false" digits="0" id="4" name="title" nullable="true" remarks="" size="2147483647" type="varchar"/>
+         <column autoUpdated="false" digits="0" id="5" name="note" nullable="true" remarks="Any comments about the contact, e.g. &quot;field&quot;, &quot;office&quot;." size="2147483647" type="varchar"/>
+         <primaryKey column="contact_pkey" sequenceNumberInPK="1"/>
+         <index name="contacts_pkey" unique="true">
+            <column ascending="true" name="contact_pkey"/>
+         </index>
+      </table>
+      <table name="customer_order_lineitem_statuses" numRows="0" remarks="Lists the possible status flags for a line item in an order." schema="public" type="TABLE">
+         <column autoUpdated="false" digits="0" id="0" name="customer_order_lineitem_status_pkey" nullable="false" remarks="Primary key of customer_order_lineitem_statuses table." size="10" type="int4">
+            <child column="status" foreignKey="customer_order_lineitems_status_fkey" implied="false" onDeleteCascade="false" table="customer_order_lineitems"/>
+         </column>
+         <column autoUpdated="false" digits="0" id="1" name="status" nullable="false" remarks="Text description of the line item status." size="2147483647" type="varchar"/>
+         <primaryKey column="customer_order_lineitem_status_pkey" sequenceNumberInPK="1"/>
+         <index name="customer_order_lineitem_statuses_pkey" unique="true">
+            <column ascending="true" name="customer_order_lineitem_status_pkey"/>
+         </index>
+      </table>
+      <table name="customer_order_lineitems" numRows="0" remarks="Contains the line-items for orders." schema="public" type="TABLE">
+         <column autoUpdated="true" defaultValue="nextval('customer_order_lineitems_pkey_seq'::regclass)" digits="0" id="0" name="customer_order_lineitem_pkey" nullable="false" remarks="" size="10" type="serial">
+            <child column="substitute" foreignKey="customer_order_lineitems_substitute_fkey" implied="false" onDeleteCascade="false" table="customer_order_lineitems"/>
+            <child column="customer_order_lineitem" foreignKey="inquery_lineitems_customer_order_lineitem_fkey" implied="false" onDeleteCascade="false" table="inquery_lineitems"/>
+            <child column="customer_order_lineitem" foreignKey="invoice_lineitems_customer_order_lineitem_fkey" implied="false" onDeleteCascade="false" table="invoice_lineitems"/>
+            <child column="customer_order_lineitem" foreignKey="pickup_list_lineitems_customer_order_lineitem_fkey" implied="false" onDeleteCascade="false" table="pickup_list_lineitems"/>
+            <child column="customer_order_lineitem" foreignKey="purchase_order_lineitems_customer_order_lineitem_fkey" implied="false" onDeleteCascade="false" table="purchase_order_lineitems"/>
+            <child column="item" foreignKey="shipping_stop_lineitems_item_fkey" implied="false" onDeleteCascade="false" table="shipping_stop_lineitems"/>
+         </column>
+         <column autoUpdated="false" digits="0" id="1" name="customer_order" nullable="false" remarks="References the order the line-item is associated with." size="10" type="int4">
+            <parent column="customer_order_pkey" foreignKey="customer_order_lineitems_customer_order_fkey" implied="false" onDeleteCascade="false" table="customer_orders"/>
+         </column>
+         <column autoUpdated="false" digits="0" id="2" name="status" nullable="false" remarks="References the status of the line-item." size="10" type="int4">
+            <parent column="customer_order_lineitem_status_pkey" foreignKey="customer_order_lineitems_status_fkey" implied="false" onDeleteCascade="false" table="customer_order_lineitem_statuses"/>
+         </column>
+         <column autoUpdated="false" digits="0" id="3" name="substitute" nullable="true" remarks="If status==substituted, then a reference to substitute lineitem. elseif NOT NULL, a reference to the item this is substituting for." size="10" type="int4">
+            <parent column="customer_order_lineitem_pkey" foreignKey="customer_order_lineitems_substitute_fkey" implied="false" onDeleteCascade="false" table="customer_order_lineitems"/>
+         </column>
+         <column autoUpdated="false" digits="0" id="4" name="supplier" nullable="true" remarks="" size="10" type="int4">
+            <parent column="business_partner_pkey" foreignKey="customer_order_lineitems_supplier_fkey" implied="false" onDeleteCascade="false" table="business_partners"/>
+         </column>
+         <column autoUpdated="false" digits="0" id="5" name="plant" nullable="false" remarks="The plant being ordered." size="10" type="int4">
+            <parent column="plant_pkey" foreignKey="customer_order_lineitems_plant_fkey" implied="false" onDeleteCascade="false" table="plants"/>
+         </column>
+         <column autoUpdated="false" digits="0" id="6" name="size_pkey" nullable="false" remarks="The size of the item being ordered." size="10" type="int4">
+            <parent column="size_pkey" foreignKey="customer_order_lineitems_size_pkey_fkey" implied="false" onDeleteCascade="false" table="sizes"/>
+         </column>
+         <column autoUpdated="false" digits="0" id="7" name="units_ordered" nullable="false" remarks="The quantity of this item being ordered." size="10" type="int4"/>
+         <column autoUpdated="false" digits="0" id="8" name="price" nullable="false" remarks="The price to use (what the supplier is charging)." size="2147483647" type="money"/>
+         <column autoUpdated="false" digits="0" id="9" name="contribution" nullable="false" remarks="The contribution to us. contribution+price = price to customer." size="2147483647" type="money"/>
+         <column autoUpdated="false" digits="0" id="10" name="available_date" nullable="true" remarks="The date at which the item is available for us to pick up." size="13" type="date"/>
+         <column autoUpdated="false" digits="0" id="11" name="purchase_order" nullable="true" remarks="The (current) purchase order we issued on which this item can be found." size="10" type="int4">
+            <parent column="purchase_order_pkey" foreignKey="customer_order_lineitems_purchase_order_fkey" implied="false" onDeleteCascade="false" table="purchase_orders"/>
+         </column>
+         <column autoUpdated="false" digits="0" id="12" name="shipping_load" nullable="true" remarks="The shipping load on which this item went out." size="10" type="int4">
+            <parent column="shipping_load_pkey" foreignKey="customer_order_lineitems_shipping_load_fkey" implied="false" onDeleteCascade="false" table="shipping_loads"/>
+         </column>
+         <column autoUpdated="false" digits="0" id="13" name="public_note" nullable="true" remarks="A comment (visible on reports which go to the customer)." size="2147483647" type="varchar"/>
+         <column autoUpdated="false" digits="0" id="14" name="private_note" nullable="true" remarks="A comment (not visible on reports which go to the customer)." size="2147483647" type="varchar"/>
+         <column autoUpdated="false" defaultValue="0" digits="0" id="15" name="sort_order" nullable="true" remarks="A column on which to sort. A customer submits a randomly ordered list. This helps retain that ordering so the customer isn't confused when they see the line-item bill." size="5" type="int2"/>
+         <primaryKey column="customer_order_lineitem_pkey" sequenceNumberInPK="1"/>
+         <index name="customer_order_lineitems_pkey" unique="true">
+            <column ascending="true" name="customer_order_lineitem_pkey"/>
+         </index>
+      </table>
+      <table name="customer_order_statuses" numRows="0" remarks="Descriptions of each order status." schema="public" type="TABLE">
+         <column autoUpdated="false" digits="0" id="0" name="customer_order_status_pkey" nullable="false" remarks="Primary Key of customer_order_statuses table." size="10" type="int4">
+            <child column="customer_order_status" foreignKey="customer_orders_customer_order_status_fkey" implied="false" onDeleteCascade="false" table="customer_orders"/>
+         </column>
+         <column autoUpdated="false" digits="0" id="1" name="status" nullable="false" remarks="Order status (in English)." size="2147483647" type="varchar"/>
+         <primaryKey column="customer_order_status_pkey" sequenceNumberInPK="1"/>
+         <index name="customer_order_statuses_pkey" unique="true">
+            <column ascending="true" name="customer_order_status_pkey"/>
+         </index>
+      </table>
+      <table name="customer_orders" numRows="0" remarks="Listing of orders our customers have placed with us." schema="public" type="TABLE">
+         <column autoUpdated="true" defaultValue="nextval('customer_orders_pkey_seq'::regclass)" digits="0" id="0" name="customer_order_pkey" nullable="false" remarks="Primary key of customer_orders table." size="10" type="serial">
+            <child column="customer_order" foreignKey="customer_order_lineitems_customer_order_fkey" implied="false" onDeleteCascade="false" table="customer_order_lineitems"/>
+            <child column="customer_order" foreignKey="invoices_customer_order_fkey" implied="false" onDeleteCascade="false" table="invoices"/>
+            <child column="customer_order" foreignKey="purchase_orders_customer_order_fkey" implied="false" onDeleteCascade="false" table="purchase_orders"/>
+         </column>
+         <column autoUpdated="false" digits="0" id="1" name="customer_order_status" nullable="false" remarks="Primery key of customer_order_statuses table. Current status of order." size="10" type="int4">
+            <parent column="customer_order_status_pkey" foreignKey="customer_orders_customer_order_status_fkey" implied="false" onDeleteCascade="false" table="customer_order_statuses"/>
+         </column>
+         <column autoUpdated="false" digits="0" id="2" name="color" nullable="false" remarks="Ribbon color associated with order. Items be tagged with this color." size="10" type="int4">
+            <parent column="color_pkey" foreignKey="customer_orders_color_fkey" implied="false" onDeleteCascade="false" table="colors"/>
+         </column>
+         <column autoUpdated="false" digits="0" id="3" name="customer" nullable="false" remarks="Primary key of business_partners table. This customer ordered this order." size="10" type="int4">
+            <parent column="business_partner_pkey" foreignKey="customer_orders_customer_fkey" implied="false" onDeleteCascade="false" table="business_partners"/>
+         </column>
+         <column autoUpdated="false" defaultValue="now()" digits="0" id="4" name="order_date" nullable="false" remarks="The order was placed on this date." size="13" type="date"/>
+         <column autoUpdated="false" digits="0" id="5" name="customer_job_address" nullable="true" remarks="Where the customer will be using the material." size="10" type="int4">
+            <parent column="address_pkey" foreignKey="customer_orders_customer_job_address_fkey" implied="false" onDeleteCascade="false" table="addresses"/>
+         </column>
+         <column autoUpdated="false" digits="0" id="6" name="customer_job_name" nullable="true" remarks="The customer's job reference name." size="2147483647" type="varchar"/>
+         <column autoUpdated="false" digits="0" id="7" name="delivery_address" nullable="true" remarks="The address to deliver the order to." size="2147483647" type="text"/>
+         <column autoUpdated="false" digits="6" id="8" name="delivery_date" nullable="true" remarks="The date and/or time at which to deliver the order." size="21" type="timetz"/>
+         <column autoUpdated="false" digits="0" id="9" name="fulfillment_zone" nullable="true" remarks="The zone in which the order will be filled; where the suppliers are." size="10" type="int4">
+            <parent column="geographical_zone_pkey" foreignKey="customer_orders_fulfillment_zone_fkey" implied="false" onDeleteCascade="false" table="geographical_zones"/>
+         </column>
+         <column autoUpdated="false" digits="0" id="10" name="destination_zone" nullable="true" remarks="The zone to which the order will be shipped; where the customer wants it." size="10" type="int4">
+            <parent column="geographical_zone_pkey" foreignKey="customer_orders_destination_zone_fkey" implied="false" onDeleteCascade="false" table="geographical_zones"/>
+         </column>
+         <primaryKey column="customer_order_pkey" sequenceNumberInPK="1"/>
+         <index name="customer_orders_pkey" unique="true">
+            <column ascending="true" name="customer_order_pkey"/>
+         </index>
+      </table>
+      <table name="geographical_zones" numRows="0" remarks="Specifies categories into which business partners can be grouped." schema="public" type="TABLE">
+         <column autoUpdated="true" defaultValue="nextval('geographical_zones_pkey_seq'::regclass)" digits="0" id="0" name="geographical_zone_pkey" nullable="false" remarks="Primary Key of geographical_zones table." size="10" type="serial">
+            <child column="geographical_zone" foreignKey="addresses_geographical_zone_fkey" implied="false" onDeleteCascade="false" table="addresses"/>
+            <child column="destination_zone" foreignKey="customer_orders_destination_zone_fkey" implied="false" onDeleteCascade="false" table="customer_orders"/>
+            <child column="fulfillment_zone" foreignKey="customer_orders_fulfillment_zone_fkey" implied="false" onDeleteCascade="false" table="customer_orders"/>
+         </column>
+         <column autoUpdated="false" digits="0" id="1" name="zone" nullable="true" remarks="The description of the zone." size="2147483647" type="varchar"/>
+         <primaryKey column="geographical_zone_pkey" sequenceNumberInPK="1"/>
+         <index name="geographical_zones_pkey" unique="true">
+            <column ascending="true" name="geographical_zone_pkey"/>
+         </index>
+      </table>
+      <table name="inqueries" numRows="0" remarks="Material inqueries we've sent to our suppliers." schema="public" type="TABLE">
+         <column autoUpdated="true" defaultValue="nextval('inqueries_pkey_seq'::regclass)" digits="0" id="0" name="inquery_pkey" nullable="false" remarks="Primary key of inqueries table." size="10" type="serial">
+            <child column="inquery" foreignKey="inquery_lineitems_inquery_fkey" implied="false" onDeleteCascade="false" table="inquery_lineitems"/>
+         </column>
+         <column autoUpdated="false" defaultValue="now()" digits="0" id="1" name="creation_date" nullable="true" remarks="Date inquery was created." size="13" type="date"/>
+         <column autoUpdated="false" digits="0" id="2" name="inquery_message" nullable="false" remarks="Message to show on inquery." size="10" type="int4">
+            <parent column="inquery_message_pkey" foreignKey="inqueries_inquery_message_fkey" implied="false" onDeleteCascade="false" table="inquery_messages"/>
+         </column>
+         <column autoUpdated="false" defaultValue="false" digits="0" id="3" name="inquery_issued" nullable="false" remarks="True if inquery has been sent to suppliers." size="1" type="bool"/>
+         <primaryKey column="inquery_pkey" sequenceNumberInPK="1"/>
+         <index name="inqueries_pkey" unique="true">
+            <column ascending="true" name="inquery_pkey"/>
+         </index>
+      </table>
+      <table name="inquery_lineitems" numRows="0" remarks="Lineitem components of inqueries." schema="public" type="TABLE">
+         <column autoUpdated="true" defaultValue="nextval('inquery_lineitems_pkey_seq'::regclass)" digits="0" id="0" name="inquery_lineitem_pkey" nullable="false" remarks="The inquery this lineitem belongs to." size="10" type="serial"/>
+         <column autoUpdated="false" digits="0" id="1" name="inquery" nullable="false" remarks="" size="10" type="int4">
+            <parent column="inquery_pkey" foreignKey="inquery_lineitems_inquery_fkey" implied="false" onDeleteCascade="false" table="inqueries"/>
+         </column>
+         <column autoUpdated="false" digits="0" id="2" name="plant" nullable="false" remarks="The material being inquired about." size="10" type="int4">
+            <parent column="plant_pkey" foreignKey="inquery_lineitems_plant_fkey" implied="false" onDeleteCascade="false" table="plants"/>
+         </column>
+         <column autoUpdated="false" digits="0" id="3" name="size_pkey" nullable="false" remarks="The size of the material." size="10" type="int4">
+            <parent column="size_pkey" foreignKey="inquery_lineitems_size_pkey_fkey" implied="false" onDeleteCascade="false" table="sizes"/>
+         </column>
+         <column autoUpdated="false" digits="0" id="4" name="units_available" nullable="true" remarks="How many are being inquired about?" size="10" type="int4"/>
+         <column autoUpdated="false" digits="0" id="5" name="customer_order_lineitem" nullable="true" remarks="A customer order lineitem upon which this inquery is based." size="10" type="int4">
+            <parent column="customer_order_lineitem_pkey" foreignKey="inquery_lineitems_customer_order_lineitem_fkey" implied="false" onDeleteCascade="false" table="customer_order_lineitems"/>
+         </column>
+         <column autoUpdated="false" digits="0" id="6" name="note" nullable="true" remarks="A note about this lineitem." size="2147483647" type="varchar"/>
+         <primaryKey column="inquery_lineitem_pkey" sequenceNumberInPK="1"/>
+         <index name="inquery_lineitems_pkey" unique="true">
+            <column ascending="true" name="inquery_lineitem_pkey"/>
+         </index>
+      </table>
+      <table name="inquery_messages" numRows="0" remarks="Messages that can be applied to outgoing inqueries." schema="public" type="TABLE">
+         <column autoUpdated="true" defaultValue="nextval('inquery_messages_pkey_seq'::regclass)" digits="0" id="0" name="inquery_message_pkey" nullable="false" remarks="" size="10" type="serial">
+            <child column="inquery_message" foreignKey="inqueries_inquery_message_fkey" implied="false" onDeleteCascade="false" table="inqueries"/>
+         </column>
+         <column autoUpdated="false" digits="0" id="1" name="message" nullable="false" remarks="Text message to use." size="2147483647" type="varchar"/>
+         <primaryKey column="inquery_message_pkey" sequenceNumberInPK="1"/>
+         <index name="inquery_messages_pkey" unique="true">
+            <column ascending="true" name="inquery_message_pkey"/>
+         </index>
+      </table>
+      <table name="invoice_lineitems" numRows="0" remarks="Lineitems for the invoices." schema="public" type="TABLE">
+         <column autoUpdated="true" defaultValue="nextval('invoice_lineitems_pkey_seq'::regclass)" digits="0" id="0" name="invoice_lineitem_pkey" nullable="false" remarks="Primary key of invoice_lineitems table." size="10" type="serial"/>
+         <column autoUpdated="false" digits="0" id="1" name="invoice" nullable="false" remarks="The invoice this lineitem belongs to." size="10" type="int4">
+            <parent column="invoice_pkey" foreignKey="invoice_lineitems_invoice_fkey" implied="false" onDeleteCascade="false" table="invoices"/>
+         </column>
+         <column autoUpdated="false" digits="0" id="2" name="customer_order_lineitem" nullable="false" remarks="The customer order lineitem being invoiced." size="10" type="int4">
+            <parent column="customer_order_lineitem_pkey" foreignKey="invoice_lineitems_customer_order_lineitem_fkey" implied="false" onDeleteCascade="false" table="customer_order_lineitems"/>
+         </column>
+         <primaryKey column="invoice_lineitem_pkey" sequenceNumberInPK="1"/>
+         <index name="invoice_lineitems_pkey" unique="true">
+            <column ascending="true" name="invoice_lineitem_pkey"/>
+         </index>
+      </table>
+      <table name="invoice_statuses" numRows="0" remarks="Possible statuses for invoices." schema="public" type="TABLE">
+         <column autoUpdated="false" digits="0" id="0" name="invoice_status_pkey" nullable="false" remarks="Primary key of invoice_statuses table." size="10" type="int4">
+            <child column="status" foreignKey="invoices_status_fkey" implied="false" onDeleteCascade="false" table="invoices"/>
+         </column>
+         <column autoUpdated="false" digits="0" id="1" name="status" nullable="false" remarks="Text description of status." size="2147483647" type="varchar"/>
+         <primaryKey column="invoice_status_pkey" sequenceNumberInPK="1"/>
+         <index name="invoice_statuses_pkey" unique="true">
+            <column ascending="true" name="invoice_status_pkey"/>
+         </index>
+      </table>
+      <table name="invoices" numRows="0" remarks="Invoices that we've issued to our customers." schema="public" type="TABLE">
+         <column autoUpdated="true" defaultValue="nextval('invoices_pkey_seq'::regclass)" digits="0" id="0" name="invoice_pkey" nullable="false" remarks="Primary key of invoices table." size="10" type="serial">
+            <child column="invoice" foreignKey="invoice_lineitems_invoice_fkey" implied="false" onDeleteCascade="false" table="invoice_lineitems"/>
+         </column>
+         <column autoUpdated="false" digits="0" id="1" name="customer_order" nullable="false" remarks="Reference to customer order being invoiced." size="10" type="int4">
+            <parent column="customer_order_pkey" foreignKey="invoices_customer_order_fkey" implied="false" onDeleteCascade="false" table="customer_orders"/>
+         </column>
+         <column autoUpdated="false" digits="0" id="2" name="status" nullable="false" remarks="Current status of invoice." size="10" type="int4">
+            <parent column="invoice_status_pkey" foreignKey="invoices_status_fkey" implied="false" onDeleteCascade="false" table="invoice_statuses"/>
+         </column>
+         <column autoUpdated="false" defaultValue="now()" digits="0" id="3" name="issue_date" nullable="false" remarks="The date on which the invoice was issued." size="13" type="date"/>
+         <column autoUpdated="false" digits="0" id="4" name="tag" nullable="false" remarks="Helps identify an invoice to a customer; e.g. &quot;ORDER/TAG&quot;." size="5" type="int2"/>
+         <primaryKey column="invoice_pkey" sequenceNumberInPK="1"/>
+         <index name="invoices_pkey" unique="true">
+            <column ascending="true" name="invoice_pkey"/>
+         </index>
+      </table>
+      <table name="pickup_list_lineitems" numRows="0" remarks="Lineitems for pickup lists." schema="public" type="TABLE">
+         <column autoUpdated="true" defaultValue="nextval('pickup_list_lineitems_pkey_seq'::regclass)" digits="0" id="0" name="pickup_list_lineitem_pkey" nullable="false" remarks="Primary key of pickup_list_lineitems table." size="10" type="serial"/>
+         <column autoUpdated="false" digits="0" id="1" name="pickup_list" nullable="false" remarks="The pickup list this lineitem is on." size="10" type="int4">
+            <parent column="pickup_list_pkey" foreignKey="pickup_list_lineitems_pickup_list_fkey" implied="false" onDeleteCascade="false" table="pickup_lists"/>
+         </column>
+         <column autoUpdated="false" digits="0" id="2" name="customer_order_lineitem" nullable="false" remarks="The customer order lineitem to pickup." size="10" type="int4">
+            <parent column="customer_order_lineitem_pkey" foreignKey="pickup_list_lineitems_customer_order_lineitem_fkey" implied="false" onDeleteCascade="false" table="customer_order_lineitems"/>
+         </column>
+         <primaryKey column="pickup_list_lineitem_pkey" sequenceNumberInPK="1"/>
+         <index name="pickup_list_lineitems_pkey" unique="true">
+            <column ascending="true" name="pickup_list_lineitem_pkey"/>
+         </index>
+      </table>
+      <table name="pickup_lists" numRows="0" remarks="A list of items to go out and retrieve from suppliers." schema="public" type="TABLE">
+         <column autoUpdated="true" defaultValue="nextval('pickup_lists_pkey_seq'::regclass)" digits="0" id="0" name="pickup_list_pkey" nullable="false" remarks="" size="10" type="serial">
+            <child column="pickup_list" foreignKey="pickup_list_lineitems_pickup_list_fkey" implied="false" onDeleteCascade="false" table="pickup_list_lineitems"/>
+         </column>
+         <column autoUpdated="false" defaultValue="now()" digits="0" id="1" name="pickup_date" nullable="false" remarks="The date to pick this stuff up." size="13" type="date"/>
+         <primaryKey column="pickup_list_pkey" sequenceNumberInPK="1"/>
+         <index name="pickup_lists_pkey" unique="true">
+            <column ascending="true" name="pickup_list_pkey"/>
+         </index>
+      </table>
+      <table name="plants" numRows="0" remarks="Contains a listing of all the plants we know about." schema="public" type="TABLE">
+         <column autoUpdated="true" defaultValue="nextval('plants_pkey_seq'::regclass)" digits="0" id="0" name="plant_pkey" nullable="false" remarks="The Primary Key for the plants table." size="10" type="serial">
+            <child column="plant" foreignKey="availabilities_plant_fkey" implied="false" onDeleteCascade="false" table="availabilities"/>
+            <child column="plant" foreignKey="customer_order_lineitems_plant_fkey" implied="false" onDeleteCascade="false" table="customer_order_lineitems"/>
+            <child column="plant" foreignKey="inquery_lineitems_plant_fkey" implied="false" onDeleteCascade="false" table="inquery_lineitems"/>
+            <child column="plant" foreignKey="purchase_order_lineitems_plant_fkey" implied="false" onDeleteCascade="false" table="purchase_order_lineitems"/>
+         </column>
+         <column autoUpdated="false" digits="0" id="1" name="botanical_name" nullable="false" remarks="The botanical name of the plant." size="2147483647" type="varchar"/>
+         <column autoUpdated="false" digits="0" id="2" name="common_name" nullable="false" remarks="The common name of the plant." size="2147483647" type="varchar"/>
+         <primaryKey column="plant_pkey" sequenceNumberInPK="1"/>
+         <index name="plants_pkey" unique="true">
+            <column ascending="true" name="plant_pkey"/>
+         </index>
+      </table>
+      <table name="purchase_order_lineitem_statuses" numRows="0" remarks="Lists the possible status flags for a line item in an order." schema="public" type="TABLE">
+         <column autoUpdated="false" digits="0" id="0" name="purchase_order_lineitem_status_pkey" nullable="false" remarks="Primary key of purchase_order_lineitem_statuses table." size="10" type="int4">
+            <child column="status" foreignKey="purchase_order_lineitems_status_fkey" implied="false" onDeleteCascade="false" table="purchase_order_lineitems"/>
+         </column>
+         <column autoUpdated="false" digits="0" id="1" name="status" nullable="false" remarks="Text description of the line item status." size="2147483647" type="varchar"/>
+         <primaryKey column="purchase_order_lineitem_status_pkey" sequenceNumberInPK="1"/>
+         <index name="purchase_order_lineitem_statuses_pkey" unique="true">
+            <column ascending="true" name="purchase_order_lineitem_status_pkey"/>
+         </index>
+      </table>
+      <table name="purchase_order_lineitems" numRows="0" remarks="Line-item listings of what material is in the POs we issue." schema="public" type="TABLE">
+         <column autoUpdated="true" defaultValue="nextval('purchase_order_lineitems_pkey_seq'::regclass)" digits="0" id="0" name="purchase_order_lineitem_pkey" nullable="false" remarks="" size="10" type="serial"/>
+         <column autoUpdated="false" digits="0" id="1" name="purchase_order" nullable="false" remarks="Reference to the PO." size="10" type="int4">
+            <parent column="purchase_order_pkey" foreignKey="purchase_order_lineitems_purchase_order_fkey" implied="false" onDeleteCascade="false" table="purchase_orders"/>
+         </column>
+         <column autoUpdated="false" digits="0" id="2" name="status" nullable="false" remarks="Current status of this line-item." size="10" type="int4">
+            <parent column="purchase_order_lineitem_status_pkey" foreignKey="purchase_order_lineitems_status_fkey" implied="false" onDeleteCascade="false" table="purchase_order_lineitem_statuses"/>
+         </column>
+         <column autoUpdated="false" digits="0" id="3" name="customer_order_lineitem" nullable="false" remarks="Reference to the customer_order_lineitem this purchase_order_lineitem is for." size="10" type="int4">
+            <parent column="customer_order_lineitem_pkey" foreignKey="purchase_order_lineitems_customer_order_lineitem_fkey" implied="false" onDeleteCascade="false" table="customer_order_lineitems"/>
+         </column>
+         <column autoUpdated="false" digits="0" id="4" name="plant" nullable="false" remarks="Reference to what kind of material is being ordered." size="10" type="int4">
+            <parent column="plant_pkey" foreignKey="purchase_order_lineitems_plant_fkey" implied="false" onDeleteCascade="false" table="plants"/>
+         </column>
+         <column autoUpdated="false" digits="0" id="5" name="size_pkey" nullable="false" remarks="Size of plant being ordered." size="10" type="int4">
+            <parent column="size_pkey" foreignKey="purchase_order_lineitems_size_pkey_fkey" implied="false" onDeleteCascade="false" table="sizes"/>
+         </column>
+         <column autoUpdated="false" digits="0" id="6" name="unit_price" nullable="false" remarks="Price per unit of plant." size="2147483647" type="money"/>
+         <column autoUpdated="false" digits="0" id="7" name="units_ordered" nullable="false" remarks="The number of units being ordered." size="10" type="int4"/>
+         <column autoUpdated="false" digits="0" id="8" name="note" nullable="true" remarks="A brief comment about this line item." size="2147483647" type="varchar"/>
+         <primaryKey column="purchase_order_lineitem_pkey" sequenceNumberInPK="1"/>
+         <index name="purchase_order_lineitems_pkey" unique="true">
+            <column ascending="true" name="purchase_order_lineitem_pkey"/>
+         </index>
+      </table>
+      <table name="purchase_order_statuses" numRows="0" remarks="Lists the possible status flags for purchase order." schema="public" type="TABLE">
+         <column autoUpdated="false" digits="0" id="0" name="purchase_order_status_pkey" nullable="false" remarks="Primary key of purchase_order_statuses table." size="10" type="int4">
+            <child column="status" foreignKey="purchase_orders_status_fkey" implied="false" onDeleteCascade="false" table="purchase_orders"/>
+         </column>
+         <column autoUpdated="false" digits="0" id="1" name="status" nullable="false" remarks="Text description of the purchase order status." size="2147483647" type="varchar"/>
+         <primaryKey column="purchase_order_status_pkey" sequenceNumberInPK="1"/>
+         <index name="purchase_order_statuses_pkey" unique="true">
+            <column ascending="true" name="purchase_order_status_pkey"/>
+         </index>
+      </table>
+      <table name="purchase_orders" numRows="0" remarks="Contains a listing of purchase orders we have issued to our suppliers." schema="public" type="TABLE">
+         <column autoUpdated="true" defaultValue="nextval('purchase_orders_pkey_seq'::regclass)" digits="0" id="0" name="purchase_order_pkey" nullable="false" remarks="Primary key of purchase_orders table." size="10" type="serial">
+            <child column="purchase_order" foreignKey="customer_order_lineitems_purchase_order_fkey" implied="false" onDeleteCascade="false" table="customer_order_lineitems"/>
+            <child column="purchase_order" foreignKey="purchase_order_lineitems_purchase_order_fkey" implied="false" onDeleteCascade="false" table="purchase_order_lineitems"/>
+         </column>
+         <column autoUpdated="false" digits="0" id="1" name="customer_order" nullable="false" remarks="Reference to the customer order this PO is related to." size="10" type="int4">
+            <parent column="customer_order_pkey" foreignKey="purchase_orders_customer_order_fkey" implied="false" onDeleteCascade="false" table="customer_orders"/>
+         </column>
+         <column autoUpdated="false" digits="0" id="2" name="supplier" nullable="false" remarks="Reference to the supplier this PO is being sent to." size="10" type="int4">
+            <parent column="business_partner_pkey" foreignKey="purchase_orders_supplier_fkey" implied="false" onDeleteCascade="false" table="business_partners"/>
+         </column>
+         <column autoUpdated="false" digits="0" id="3" name="status" nullable="false" remarks="Reference to the current status of this PO." size="10" type="int4">
+            <parent column="purchase_order_status_pkey" foreignKey="purchase_orders_status_fkey" implied="false" onDeleteCascade="false" table="purchase_order_statuses"/>
+         </column>
+         <column autoUpdated="false" defaultValue="now()" digits="0" id="4" name="issue_date" nullable="false" remarks="The date the PO was issued." size="13" type="date"/>
+         <column autoUpdated="false" digits="0" id="5" name="paid_date" nullable="true" remarks="The date we paid for the material in the PO." size="13" type="date"/>
+         <primaryKey column="purchase_order_pkey" sequenceNumberInPK="1"/>
+         <index name="purchase_orders_pkey" unique="true">
+            <column ascending="true" name="purchase_order_pkey"/>
+         </index>
+      </table>
+      <table name="shipping_load_statuses" numRows="0" remarks="Defines the possible states of a shipping load." schema="public" type="TABLE">
+         <column autoUpdated="false" digits="0" id="0" name="shipping_load_status_pkey" nullable="false" remarks="Primary key of shipping_load_statuses table." size="10" type="int4">
+            <child column="status" foreignKey="shipping_loads_status_fkey" implied="false" onDeleteCascade="false" table="shipping_loads"/>
+         </column>
+         <column autoUpdated="false" digits="0" id="1" name="status" nullable="false" remarks="Text description of the state or status." size="2147483647" type="varchar"/>
+         <primaryKey column="shipping_load_status_pkey" sequenceNumberInPK="1"/>
+         <index name="shipping_load_statuses_pkey" unique="true">
+            <column ascending="true" name="shipping_load_status_pkey"/>
+         </index>
+      </table>
+      <table name="shipping_loads" numRows="0" remarks="A listing of shipping &quot;loads&quot; on which material may be shipped." schema="public" type="TABLE">
+         <column autoUpdated="true" defaultValue="nextval('shipping_loads_pkey_seq'::regclass)" digits="0" id="0" name="shipping_load_pkey" nullable="false" remarks="Primary key of shipping_loads table." size="10" type="serial">
+            <child column="shipping_load" foreignKey="customer_order_lineitems_shipping_load_fkey" implied="false" onDeleteCascade="false" table="customer_order_lineitems"/>
+            <child column="shipping_load" foreignKey="shipping_stops_shipping_load_fkey" implied="false" onDeleteCascade="false" table="shipping_stops"/>
+         </column>
+         <column autoUpdated="false" digits="0" id="1" name="status" nullable="false" remarks="The current status of this shipping load." size="10" type="int4">
+            <parent column="shipping_load_status_pkey" foreignKey="shipping_loads_status_fkey" implied="false" onDeleteCascade="false" table="shipping_load_statuses"/>
+         </column>
+         <column autoUpdated="false" digits="0" id="2" name="carrier" nullable="true" remarks="The carrier carrying this load." size="10" type="int4">
+            <parent column="business_partner_pkey" foreignKey="shipping_loads_carrier_fkey" implied="false" onDeleteCascade="false" table="business_partners"/>
+         </column>
+         <column autoUpdated="false" digits="0" id="3" name="broker" nullable="true" remarks="The broker through which the carrier was obtained." size="10" type="int4">
+            <parent column="business_partner_pkey" foreignKey="shipping_loads_broker_fkey" implied="false" onDeleteCascade="false" table="business_partners"/>
+         </column>
+         <column autoUpdated="false" digits="6" id="4" name="ship_date" nullable="true" remarks="" size="35" type="timestamptz"/>
+         <column autoUpdated="false" digits="0" id="5" name="note" nullable="true" remarks="A brief comment about this shipping load." size="2147483647" type="varchar"/>
+         <primaryKey column="shipping_load_pkey" sequenceNumberInPK="1"/>
+         <index name="shipping_loads_pkey" unique="true">
+            <column ascending="true" name="shipping_load_pkey"/>
+         </index>
+      </table>
+      <table name="shipping_stop_lineitems" numRows="0" remarks="Items affected by a stop." schema="public" type="TABLE">
+         <column autoUpdated="true" defaultValue="nextval('shipping_stop_lineitems_pkey_seq'::regclass)" digits="0" id="0" name="shipping_stop_lineitem_pkey" nullable="false" remarks="Primary key." size="10" type="serial"/>
+         <column autoUpdated="false" digits="0" id="1" name="shipping_stop" nullable="false" remarks="" size="10" type="int4">
+            <parent column="shipping_stop_pkey" foreignKey="shipping_stop_lineitems_shipping_stop_fkey" implied="false" onDeleteCascade="false" table="shipping_stops"/>
+         </column>
+         <column autoUpdated="false" digits="0" id="2" name="item" nullable="false" remarks="Item from customer order that is affected." size="10" type="int4">
+            <parent column="customer_order_lineitem_pkey" foreignKey="shipping_stop_lineitems_item_fkey" implied="false" onDeleteCascade="false" table="customer_order_lineitems"/>
+         </column>
+         <primaryKey column="shipping_stop_lineitem_pkey" sequenceNumberInPK="1"/>
+         <index name="shipping_stop_lineitems_pkey" unique="true">
+            <column ascending="true" name="shipping_stop_lineitem_pkey"/>
+         </index>
+      </table>
+      <table name="shipping_stop_types" numRows="0" remarks="Defines the kinds of shipping stops." schema="public" type="TABLE">
+         <column autoUpdated="false" digits="0" id="0" name="shipping_stop_type_pkey" nullable="false" remarks="Primary key of shipping_stop_types table." size="10" type="int4">
+            <child column="shipping_stop_type" foreignKey="shipping_stops_shipping_stop_type_fkey" implied="false" onDeleteCascade="false" table="shipping_stops"/>
+         </column>
+         <column autoUpdated="false" digits="0" id="1" name="description" nullable="false" remarks="Written description of the type of stop." size="2147483647" type="varchar"/>
+         <primaryKey column="shipping_stop_type_pkey" sequenceNumberInPK="1"/>
+         <index name="shipping_stop_types_pkey" unique="true">
+            <column ascending="true" name="shipping_stop_type_pkey"/>
+         </index>
+      </table>
+      <table name="shipping_stops" numRows="0" remarks="Listing of all the stops for each load." schema="public" type="TABLE">
+         <column autoUpdated="true" defaultValue="nextval('shipping_stops_pkey_seq'::regclass)" digits="0" id="0" name="shipping_stop_pkey" nullable="false" remarks="Primary key for shipping_stops table." size="10" type="serial">
+            <child column="shipping_stop" foreignKey="shipping_stop_lineitems_shipping_stop_fkey" implied="false" onDeleteCascade="false" table="shipping_stop_lineitems"/>
+         </column>
+         <column autoUpdated="false" digits="0" id="1" name="shipping_stop_type" nullable="false" remarks="" size="10" type="int4">
+            <parent column="shipping_stop_type_pkey" foreignKey="shipping_stops_shipping_stop_type_fkey" implied="false" onDeleteCascade="false" table="shipping_stop_types"/>
+         </column>
+         <column autoUpdated="false" digits="0" id="2" name="shipping_load" nullable="false" remarks="The load this pick is a part of." size="10" type="int4">
+            <parent column="shipping_load_pkey" foreignKey="shipping_stops_shipping_load_fkey" implied="false" onDeleteCascade="false" table="shipping_loads"/>
+         </column>
+         <column autoUpdated="false" digits="0" id="3" name="address" nullable="false" remarks="" size="10" type="int4">
+            <parent column="address_pkey" foreignKey="shipping_stops_address_fkey" implied="false" onDeleteCascade="false" table="addresses"/>
+         </column>
+         <column autoUpdated="false" defaultValue="0" digits="0" id="4" name="sort_order" nullable="false" remarks="Provides ordering capability for picks." size="5" type="int2"/>
+         <primaryKey column="shipping_stop_pkey" sequenceNumberInPK="1"/>
+         <index name="shipping_stops_pkey" unique="true">
+            <column ascending="true" name="shipping_stop_pkey"/>
+         </index>
+      </table>
+      <table name="size_classes" numRows="0" remarks="Contains size classifications for materials." schema="public" type="TABLE">
+         <column autoUpdated="true" defaultValue="nextval('size_classes_pkey_seq'::regclass)" digits="0" id="0" name="size_class_pkey" nullable="false" remarks="Primary key for size_classes table." size="10" type="serial">
+            <child column="size_class" foreignKey="sizes_size_class_fkey" implied="false" onDeleteCascade="false" table="sizes"/>
+         </column>
+         <column autoUpdated="false" digits="0" id="1" name="size_class" nullable="false" remarks="Size classification (in English)." size="2147483647" type="varchar"/>
+         <primaryKey column="size_class_pkey" sequenceNumberInPK="1"/>
+         <index name="size_classes_pkey" unique="true">
+            <column ascending="true" name="size_class_pkey"/>
+         </index>
+      </table>
+      <table name="sizes" numRows="0" remarks="Defines the specific sizes." schema="public" type="TABLE">
+         <column autoUpdated="true" defaultValue="nextval('sizes_pkey_seq'::regclass)" digits="0" id="0" name="size_pkey" nullable="false" remarks="Primary key for sizes table." size="10" type="serial">
+            <child column="size_pkey" foreignKey="availabilities_size_pkey_fkey" implied="false" onDeleteCascade="false" table="availabilities"/>
+            <child column="size_pkey" foreignKey="customer_order_lineitems_size_pkey_fkey" implied="false" onDeleteCascade="false" table="customer_order_lineitems"/>
+            <child column="size_pkey" foreignKey="inquery_lineitems_size_pkey_fkey" implied="false" onDeleteCascade="false" table="inquery_lineitems"/>
+            <child column="size_pkey" foreignKey="purchase_order_lineitems_size_pkey_fkey" implied="false" onDeleteCascade="false" table="purchase_order_lineitems"/>
+         </column>
+         <column autoUpdated="false" digits="0" id="1" name="size_class" nullable="false" remarks="Reference to size_class." size="10" type="int4">
+            <parent column="size_class_pkey" foreignKey="sizes_size_class_fkey" implied="false" onDeleteCascade="false" table="size_classes"/>
+         </column>
+         <column autoUpdated="false" digits="0" id="2" name="description" nullable="false" remarks="Size (in English)." size="2147483647" type="varchar"/>
+         <primaryKey column="size_pkey" sequenceNumberInPK="1"/>
+         <index name="sizes_pkey" unique="true">
+            <column ascending="true" name="size_pkey"/>
+         </index>
+      </table>
+   </tables>
+</database>
