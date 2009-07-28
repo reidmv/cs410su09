@@ -30,3 +30,39 @@
  * 1_create_broke_tables.postgresql should be run first.
  */
 
+
+INSERT INTO size_classes (size_class_pkey, size_class) VALUES
+	(1, 'gallon'),
+	(2, 'spread'),
+	(3, 'height'),
+	(4,    'cup');
+
+/**
+ * Gallon-class sizes
+ */
+INSERT INTO sizes (size_class, description) VALUES
+	(1,   '1'),
+	(1,   '2'),
+	(1,   '3'),
+	(1,   '5'),
+	(1,  '10'),
+	(1,  '15'),
+	(1,  '20'),
+	(1,  '25'),
+	(1,  '30'),
+	(1,  '50'),
+	(1, '100');
+
+/**
+ * Spread-class sizes
+ */
+INSERT INTO sizes (size_class, description) VALUES
+	(2,   '10-12'''),
+	(2,   '12-14''');
+
+/**
+ * Height-class sizes
+ */
+INSERT INTO sizes (size_class, description) VALUES
+	(3,   '10-12'''),
+	(3,   '12-14''');
