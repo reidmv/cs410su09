@@ -25,24 +25,24 @@ DB_NAME   = reidmv
 DB_PASS   = cs410oss
 
 SCHEMASPY_DIR = documentation/SchemaSpy
-DB_SCRIPT_DIR = db_creation_scripts
+DB_SCRIPT_DIR = db_scripts
 
-all :
+all : drop create insert schemaspy
 
 drop :
 	export PGPASSWORD=${DB_PASS};	\
 	psql -h ${DB_HOST} -d ${DB_NAME} -U ${DB_USER} -f ${DB_SCRIPT_DIR}/0_drop.postgresql;
 
-create :
+create : drop
 	export PGPASSWORD=${DB_PASS};	\
 	psql -h ${DB_HOST} -d ${DB_NAME} -U ${DB_USER} -f ${DB_SCRIPT_DIR}/1_create.postgresql;
 
-insert :
+insert : create
 	export PGPASSWORD=${DB_PASS};	\
 	psql -h ${DB_HOST} -d ${DB_NAME} -U ${DB_USER} -f ${DB_SCRIPT_DIR}/2_insert.postgresql;
 
 
-clean .SILENT .IGNORE :
+clean : drop
 	rm -rf ${SCHEMASPY_DIR}/html/*;
 
 schemaspy :
