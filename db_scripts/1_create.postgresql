@@ -159,7 +159,7 @@ CREATE TABLE business_partners (
 	billing_address         integer NOT NULL REFERENCES addresses,
 	primary_contact         integer);
 
-CREATE INDEX business_partners_type ON business_partners (business_partner_type);
+CREATE INDEX business_partners_business_partner_type ON business_partners (business_partner_type);
 
 COMMENT ON TABLE  business_partners IS 'Customers, suppliers, companies with whom business is done.';
 COMMENT ON COLUMN business_partners.business_partner_pkey IS 'Primary key of business_partners table.';
@@ -183,7 +183,7 @@ CREATE TABLE contacts (
 	title            varchar,
 	note             varchar);
 
-CREATE INDEX business_partner ON contacts (business_partner);
+CREATE INDEX contacts_business_partner ON contacts (business_partner);
 
 COMMENT ON TABLE  contacts IS 'People we interact with (associated with a business partner).';
 COMMENT ON COLUMN contacts.business_partner IS 'The business partner this contact is associated with.';
@@ -245,7 +245,7 @@ CREATE TABLE availabilities (
 	availability_date date    DEFAULT now() NOT NULL,
 	note              varchar);
 
-CREATE INDEX supplier ON availabilities (supplier);
+CREATE INDEX availabilities_supplier ON availabilities (supplier);
 
 COMMENT ON TABLE  availabilities IS 'Presumed material availabilities.';
 COMMENT ON COLUMN availabilities.availability_pkey IS 'Primary key of availabilities table.';
@@ -366,7 +366,7 @@ CREATE TABLE purchase_orders (
 	issue_date          date NOT NULL DEFAULT now(),
 	paid_date           date DEFAULT NULL);
 
-CREATE INDEX customer_order ON purchase_orders (customer_order);
+CREATE INDEX purchase_orders_customer_order ON purchase_orders (customer_order);
 
 COMMENT ON TABLE  purchase_orders IS 'Contains a listing of purchase orders we have issued to our suppliers.';
 COMMENT ON COLUMN purchase_orders.purchase_order_pkey IS 'Primary key of purchase_orders table.';
@@ -415,6 +415,8 @@ CREATE TABLE customer_order_lineitems (
 	private_note                 varchar,
 	sort_order                   smallint DEFAULT 0);
 
+CREATE INDEX customer_order_lineitems_customer_order ON customer_order_lineitems (customer_order);
+
 COMMENT ON TABLE  customer_order_lineitems IS 'Contains the line-items for orders.';
 COMMENT ON COLUMN customer_order_lineitems.customer_order IS 'References the order the line-item is associated with.';
 COMMENT ON COLUMN customer_order_lineitems.status IS 'References the status of the line-item.';
@@ -461,6 +463,8 @@ CREATE TABLE purchase_order_lineitems (
 	units_ordered                integer NOT NULL,
 	note                         varchar);
 
+CREATE INDEX purchase_order_lineitems_purchase_order ON purchase_order_lineitems (purchase_order);
+
 COMMENT ON TABLE  purchase_order_lineitems  IS 'Line-item listings of what material is in the POs we issue.';
 COMMENT ON COLUMN purchase_order_lineitems.purchase_order IS 'Reference to the PO.';
 COMMENT ON COLUMN purchase_order_lineitems.status IS 'Current status of this line-item.';
@@ -499,7 +503,8 @@ CREATE TABLE shipping_stops (
 	address            integer NOT NULL REFERENCES addresses,
 	sort_order         smallint NOT NULL DEFAULT 0);
 
-CREATE INDEX shipping_stop_type ON shipping_stops (shipping_stop_type);
+CREATE INDEX shipping_stops_shipping_stop_type ON shipping_stops (shipping_stop_type);
+CREATE INDEX shipping_stops_shipping_load ON shipping_stops (shipping_load);
 
 COMMENT ON TABLE  shipping_stops IS 'Listing of all the stops for each load.';
 COMMENT ON COLUMN shipping_stops.shipping_stop_pkey IS 'Primary key for shipping_stops table.';
@@ -547,7 +552,7 @@ CREATE TABLE invoices (
 	issue_date       date     NOT NULL DEFAULT now(),
 	tag              smallint NOT NULL);
 
-CREATE INDEX customer_order on invoices (customer_order);
+CREATE INDEX invoices_customer_order on invoices (customer_order);
 
 COMMENT ON TABLE  invoices IS 'Invoices that we''ve issued to our customers.';
 COMMENT ON COLUMN invoices.invoice_pkey IS 'Primary key of invoices table.';
@@ -566,6 +571,8 @@ CREATE TABLE invoice_lineitems (
 	invoice_lineitem_pkey   integer DEFAULT nextval('invoice_lineitems_pkey_seq'::regclass) PRIMARY KEY,
 	invoice                 integer NOT NULL REFERENCES invoices,
 	customer_order_lineitem integer NOT NULL REFERENCES customer_order_lineitems);
+
+CREATE INDEX invoice_lineitems_invoice ON invoice_lineitems (invoice);
 	
 COMMENT ON TABLE  invoice_lineitems IS 'Lineitems for the invoices.';
 COMMENT ON COLUMN invoice_lineitems.invoice_lineitem_pkey IS 'Primary key of invoice_lineitems table.';
@@ -593,6 +600,8 @@ CREATE TABLE pickup_list_lineitems (
 	pickup_list_lineitem_pkey integer DEFAULT nextval('pickup_list_lineitems_pkey_seq'::regclass) PRIMARY KEY,
 	pickup_list               integer NOT NULL REFERENCES pickup_lists,
 	customer_order_lineitem   integer NOT NULL REFERENCES customer_order_lineitems);
+
+CREATE INDEX pickup_list_lineitems_pickup_list ON pickup_list_lineitems (pickup_list);
 
 COMMENT ON TABLE  pickup_list_lineitems IS 'Lineitems for pickup lists.';
 COMMENT ON COLUMN pickup_list_lineitems.pickup_list_lineitem_pkey IS 'Primary key of pickup_list_lineitems table.';
@@ -645,7 +654,7 @@ CREATE TABLE inquery_lineitems (
 	customer_order_lineitem integer REFERENCES customer_order_lineitems,
 	note                    varchar);
 
-CREATE INDEX inquery on inquery_lineitems (inquery);
+CREATE INDEX inquery_lineitems_inquery on inquery_lineitems (inquery);
 
 COMMENT ON TABLE  inquery_lineitems IS 'Lineitem components of inqueries.';
 COMMENT ON COLUMN inquery_lineitems.inquery_lineitem_pkey IS 'The inquery this lineitem belongs to.';
