@@ -183,6 +183,8 @@ CREATE TABLE contacts (
 	title            varchar,
 	note             varchar);
 
+CREATE INDEX business_partner ON contacts (business_partner);
+
 COMMENT ON TABLE  contacts IS 'People we interact with (associated with a business partner).';
 COMMENT ON COLUMN contacts.business_partner IS 'The business partner this contact is associated with.';
 COMMENT ON COLUMN contacts.first_name IS 'The contact''s first name.';
@@ -242,6 +244,8 @@ CREATE TABLE availabilities (
 	price             money   NOT NULL,
 	availability_date date    DEFAULT now() NOT NULL,
 	note              varchar);
+
+CREATE INDEX supplier ON availabilities (supplier);
 
 COMMENT ON TABLE  availabilities IS 'Presumed material availabilities.';
 COMMENT ON COLUMN availabilities.availability_pkey IS 'Primary key of availabilities table.';
@@ -361,6 +365,8 @@ CREATE TABLE purchase_orders (
 	status              integer NOT NULL REFERENCES purchase_order_statuses,
 	issue_date          date NOT NULL DEFAULT now(),
 	paid_date           date DEFAULT NULL);
+
+CREATE INDEX customer_order ON purchase_orders (customer_order);
 
 COMMENT ON TABLE  purchase_orders IS 'Contains a listing of purchase orders we have issued to our suppliers.';
 COMMENT ON COLUMN purchase_orders.purchase_order_pkey IS 'Primary key of purchase_orders table.';
@@ -493,6 +499,8 @@ CREATE TABLE shipping_stops (
 	address            integer NOT NULL REFERENCES addresses,
 	sort_order         smallint NOT NULL DEFAULT 0);
 
+CREATE INDEX shipping_stop_type ON shipping_stops (shipping_stop_type);
+
 COMMENT ON TABLE  shipping_stops IS 'Listing of all the stops for each load.';
 COMMENT ON COLUMN shipping_stops.shipping_stop_pkey IS 'Primary key for shipping_stops table.';
 COMMENT ON COLUMN shipping_stops.shipping_load IS 'The load this pick is a part of.';
@@ -538,6 +546,8 @@ CREATE TABLE invoices (
 	status           integer  NOT NULL REFERENCES invoice_statuses,
 	issue_date       date     NOT NULL DEFAULT now(),
 	tag              smallint NOT NULL);
+
+CREATE INDEX customer_order on invoices (customer_order);
 
 COMMENT ON TABLE  invoices IS 'Invoices that we''ve issued to our customers.';
 COMMENT ON COLUMN invoices.invoice_pkey IS 'Primary key of invoices table.';
@@ -634,6 +644,8 @@ CREATE TABLE inquery_lineitems (
 	units_available         integer,
 	customer_order_lineitem integer REFERENCES customer_order_lineitems,
 	note                    varchar);
+
+CREATE INDEX inquery on inquery_lineitems (inquery);
 
 COMMENT ON TABLE  inquery_lineitems IS 'Lineitem components of inqueries.';
 COMMENT ON COLUMN inquery_lineitems.inquery_lineitem_pkey IS 'The inquery this lineitem belongs to.';
