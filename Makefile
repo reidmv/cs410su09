@@ -46,4 +46,5 @@ clean : drop
 	rm -rf ${SCHEMASPY_DIR}/html/*;
 
 schemaspy :
-	java -jar ${SCHEMASPY_DIR}/schemaSpy_4.1.1.jar -t pgsql -host ${DB_HOST} -db ${DB_NAME} -s public -u ${DB_USER} -p ${DB_PASS} -o ${SCHEMASPY_DIR}/html/ -dp ${SCHEMASPY_DIR}/postgresql-8.3-604.jdbc3.jar -hq;
+	java -jar ${SCHEMASPY_DIR}/schemaSpy_4.1.1.jar -t pgsql -host ${DB_HOST} -db ${DB_NAME} -s public -u ${DB_USER} -p ${DB_PASS} -o ${SCHEMASPY_DIR}/html/ -dp ${SCHEMASPY_DIR}/postgresql-8.3-604.jdbc3.jar -hq; \
+	chmod -R a+r ${SCHEMASPY_DIR}/html 

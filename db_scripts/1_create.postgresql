@@ -144,6 +144,54 @@ COMMENT ON COLUMN business_partner_types.business_partner_type_pkey IS 'Primary 
 COMMENT ON COLUMN business_partner_types.description IS 'The linquistic description of the type.';
 
 /**
+ * The business_partners table contains information for companies with which
+ * business is done. These could be suppliers, customers, or any other
+ * designation which we choose. This being "contact information," the
+ * database design here could get as complicated as we want.
+ */
+
+CREATE SEQUENCE business_partners_pkey_seq;
+CREATE TABLE business_partners (
+	business_partner_pkey   integer DEFAULT nextval('business_partners_pkey_seq'::regclass) PRIMARY KEY,
+	business_partner_type   integer NOT NULL REFERENCES business_partner_types,
+	business_name           varchar NOT NULL,
+	location_address        integer NOT NULL REFERENCES addresses,
+	billing_address         integer NOT NULL REFERENCES addresses,
+	primary_contact         integer);
+
+CREATE INDEX business_partners_type ON business_partners (business_partner_type);
+
+COMMENT ON TABLE  business_partners IS 'Customers, suppliers, companies with whom business is done.';
+COMMENT ON COLUMN business_partners.business_partner_pkey IS 'Primary key of business_partners table.';
+COMMENT ON COLUMN business_partners.business_partner_type IS 'Type of partner; references business_partner_types.';
+COMMENT ON COLUMN	business_partners.business_name IS 'Business name of partner.';
+COMMENT ON COLUMN business_partners.location_address IS 'Street address of partner.';
+COMMENT ON COLUMN business_partners.billing_address IS 'Billing address of partner.';
+COMMENT ON COLUMN business_partners.primary_contact IS 'The general contact information of partner.';
+
+/**
+ * The contacts table holds information on individuals working for/with a
+ * company from the business_partners table.
+ */
+
+CREATE SEQUENCE contacts_pkey_seq;
+CREATE TABLE contacts (
+	contact_pkey     integer DEFAULT nextval('contacts_pkey_seq'::regclass) PRIMARY KEY,
+	business_partner integer NOT NULL REFERENCES business_partners,
+	first_name       varchar NOT NULL,
+	last_name        varchar NOT NULL,
+	title            varchar,
+	note             varchar);
+
+COMMENT ON TABLE  contacts IS 'People we interact with (associated with a business partner).';
+COMMENT ON COLUMN contacts.business_partner IS 'The business partner this contact is associated with.';
+COMMENT ON COLUMN contacts.first_name IS 'The contact''s first name.';
+COMMENT ON COLUMN contacts.last_name IS 'The contact''s last name.';
+COMMENT ON COLUMN contacts.note IS 'Any comments about the contact, e.g. "field", "office".';
+
+ALTER TABLE business_partners ADD FOREIGN KEY (primary_contact) REFERENCES contacts;
+
+/**
  * The contact_detail_types table lists the kinds of contact details known.
  * e.g. "email", "phone", "pager".
  */
@@ -165,63 +213,16 @@ CREATE SEQUENCE contact_details_pkey_seq;
 CREATE TABLE contact_details (
 	contact_detail_pkey integer DEFAULT nextval('contact_details_pkey_seq'::regclass) PRIMARY KEY,
 	contact_detail_type integer NOT NULL REFERENCES contact_detail_types,
+	contact             integer NOT NULL REFERENCES contacts,
 	contact_detail      varchar NOT NULL,
 	note                varchar);
 
 COMMENT ON TABLE  contact_details IS 'Contact information associated with contacts.';
 COMMENT ON COLUMN contact_details.contact_detail_pkey IS 'Primary Key of contact_details table.';
+COMMENT ON COLUMN contact_details.contact_detail_type IS 'Primary Key of contact_detail_types table.';
+COMMENT ON COLUMN contact_details.contact IS 'The contact these details are part of.';
 COMMENT ON COLUMN contact_details.contact_detail IS 'Specifics. Phone number, e-mail address, etc.';
-COMMENT ON COLUMN contact_details.note          IS 'Comment about this contact info, e.g. "mobile", "business".';
-
-/**
- * The business_partners table contains information for companies with which
- * business is done. These could be suppliers, customers, or any other
- * designation which we choose. This being "contact information," the
- * database design here could get as complicated as we want.
- */
-
-CREATE SEQUENCE business_partners_pkey_seq;
-CREATE TABLE business_partners (
-	business_partner_pkey   integer DEFAULT nextval('business_partners_pkey_seq'::regclass) PRIMARY KEY,
-	business_partner_type   integer NOT NULL REFERENCES business_partner_types,
-	business_name           varchar NOT NULL,
-	location_address        integer NOT NULL REFERENCES addresses,
-	billing_address         integer NOT NULL REFERENCES addresses,
-	fax                     integer REFERENCES contact_details,
-	phone                   integer REFERENCES contact_details,
-	email                   integer REFERENCES contact_details);
-
-CREATE INDEX business_partners_type ON business_partners (business_partner_type);
-
-COMMENT ON TABLE  business_partners IS 'Customers, suppliers, companies with whom business is done.';
-COMMENT ON COLUMN business_partners.business_partner_pkey IS 'Primary key of business_partners table.';
-COMMENT ON COLUMN business_partners.business_partner_type IS 'Type of partner; references business_partner_types.';
-COMMENT ON COLUMN	business_partners.business_name IS 'Business name of partner.';
-COMMENT ON COLUMN business_partners.location_address IS 'Street address of partner.';
-COMMENT ON COLUMN business_partners.billing_address IS 'Billing address of partner.';
-COMMENT ON COLUMN business_partners.fax IS 'General fax number of partner.';
-COMMENT ON COLUMN business_partners.phone IS 'General phone number of partner.';
-COMMENT ON COLUMN business_partners.email IS 'General email address of partner.';
-
-/**
- * The contacts table holds information on individuals working for/with a
- * company from the business_partners table.
- */
-
-CREATE SEQUENCE contacts_pkey_seq;
-CREATE TABLE contacts (
-	contact_pkey     integer DEFAULT nextval('contacts_pkey_seq'::regclass) PRIMARY KEY,
-	business_partner integer NOT NULL REFERENCES business_partners,
-	first_name       varchar NOT NULL,
-	last_name        varchar NOT NULL,
-	title            varchar,
-	note             varchar);
-
-COMMENT ON TABLE  contacts IS 'People we interact with (associated with a business partner).';
-COMMENT ON COLUMN contacts.business_partner IS 'The business partner this contact is associated with.';
-COMMENT ON COLUMN contacts.first_name IS 'The contact''s first name.';
-COMMENT ON COLUMN contacts.last_name IS 'The contact''s last name.';
-COMMENT ON COLUMN contacts.note IS 'Any comments about the contact, e.g. "field", "office".';
+COMMENT ON COLUMN contact_details.note IS 'Comment about this contact info, e.g. "mobile", "business".';
 
 /**
  * The availabilities table contains information about what materials we
