@@ -321,7 +321,7 @@ CREATE TABLE customer_orders (
 	order_date            date NOT NULL DEFAULT now(),
 	customer_job_address  integer REFERENCES addresses,
 	customer_job_name     varchar,
-	delivery_address      text,
+	delivery_address      integer REFERENCES addresses,
 	delivery_date         time WITH TIME ZONE,
 	fulfillment_zone      integer REFERENCES geographical_zones,
 	destination_zone      integer REFERENCES geographical_zones);
@@ -594,13 +594,24 @@ COMMENT ON TABLE  pickup_lists IS 'A list of items to go out and retrieve from s
 COMMENT ON COLUMN pickup_lists.pickup_date IS 'The date to pick this stuff up.';
 
 /**
+ * The pickup_list_lineitem_statuses table defines what status a lineitem in a
+ * pickup list might have. e.g "Pending", "Rejected", "Picked up".
+ */
+
+CREATE TABLE pickup_list_lineitem_statuses (
+	pickup_list_lineitem_status_pkey integer PRIMARY KEY,
+	status                           varchar NOT NULL);
+
+/**
  * The pickup_list_lineitems table holds the lineitems for a pickup list.
+ * These lists reference items that are part of an order (customer_orders).
  */
 
 CREATE SEQUENCE pickup_list_lineitems_pkey_seq;
 CREATE TABLE pickup_list_lineitems (
 	pickup_list_lineitem_pkey integer DEFAULT nextval('pickup_list_lineitems_pkey_seq'::regclass) PRIMARY KEY,
 	pickup_list               integer NOT NULL REFERENCES pickup_lists,
+	status                    integer NOT NULL REFERENCES pickup_list_lineitem_statuses,
 	customer_order_lineitem   integer NOT NULL REFERENCES customer_order_lineitems);
 
 CREATE INDEX pickup_list_lineitems_pickup_list ON pickup_list_lineitems (pickup_list);
