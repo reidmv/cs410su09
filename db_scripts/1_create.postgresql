@@ -219,6 +219,8 @@ CREATE TABLE contact_details (
 	contact_detail      varchar NOT NULL,
 	note                varchar);
 
+CREATE INDEX contact_details_contact ON contact_details (contact);
+
 COMMENT ON TABLE  contact_details IS 'Contact information associated with contacts.';
 COMMENT ON COLUMN contact_details.contact_detail_pkey IS 'Primary Key of contact_details table.';
 COMMENT ON COLUMN contact_details.contact_detail_type IS 'Primary Key of contact_detail_types table.';
