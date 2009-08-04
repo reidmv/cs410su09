@@ -39,8 +39,10 @@ create : drop
 
 insert : create
 	export PGPASSWORD=${DB_PASS};	\
-	psql -h ${DB_HOST} -d ${DB_NAME} -U ${DB_USER} -f ${DB_SCRIPT_DIR}/2_insert.postgresql;
-
+	{ \
+	  psql -h ${DB_HOST} -d ${DB_NAME} -U ${DB_USER} -f ${DB_SCRIPT_DIR}/2_insert_sizes.postgresql; \
+		psql -h ${DB_HOST} -d ${DB_NAME} -U ${DB_USER} -f ${DB_SCRIPT_DIR}/2_insert_plants.postgresql; \
+	};
 
 clean : drop
 	rm -rf ${SCHEMASPY_DIR}/html/*;

@@ -21,48 +21,100 @@
 
 /**
  * To insert structural data into the broke database, run this script in psql
- * `psql -f 1_create_main_tables.postgresql $DB $USER` 
+ * `psql -f 2_insert_sizes.postgresql $DB $USER` 
  *
  * Or from interactive mode,
- * `db_name=> \i 1_create_main_tables.postgresql`
+ * `db_name=> \i 2_insert_sizes.postgresql`
  * 
  * If the database is in need of tables, the accompanying
  * 1_create_broke_tables.postgresql should be run first.
  */
 
-
 INSERT INTO size_classes (size_class_pkey, size_class) VALUES
-	(1, 'gallon'),
-	(2, 'spread'),
-	(3, 'height'),
-	(4,    'cup');
+	( 1, 'Band'  ),
+	( 2, 'Box'   ),
+	( 3, 'Bulb'  ),
+	( 4, 'Cal'   ),
+	( 5, 'Cone'  ),
+	( 6, 'Cup'   ),
+	( 7, 'Flat'  ),
+	( 8, 'Gal'   ),
+	( 9, 'Ht'    ),
+	(10, 'Length'),
+	(11, 'Plug'  ),
+	(12, 'Qt'    ),
+	(13, 'Spread');
 
 /**
- * Gallon-class sizes
+ * Band-class sizes
  */
 INSERT INTO sizes (size_class, description) VALUES
-	(1,   '1'),
-	(1,   '2'),
-	(1,   '3'),
-	(1,   '5'),
-	(1,  '10'),
-	(1,  '15'),
-	(1,  '20'),
-	(1,  '25'),
-	(1,  '30'),
-	(1,  '50'),
-	(1, '100');
+	(1,   '5"');
 
 /**
- * Spread-class sizes
+ * Box-class sizes
  */
 INSERT INTO sizes (size_class, description) VALUES
-	(2,   '10-12'''),
-	(2,   '12-14''');
+	(2, '12"'),
+	(2, '16"'),
+	(2, '24"'),
+	(2, '30"'),
+	(2, '36"');
 
 /**
- * Height-class sizes
+ * Bulb-class sizes
  */
 INSERT INTO sizes (size_class, description) VALUES
-	(3,   '10-12'''),
-	(3,   '12-14''');
+	(3, '.'),
+
+/**
+ * Cal-class sizes
+ */
+INSERT INTO sizes (size_class, description) VALUES
+	(4, '0.75"'),
+	(4, '1"'   ),
+	(4, '1.25"'),
+	(4, '1.5"' ),
+	(4, '1.75"'),
+	(4, '2"'   ),
+	(4, '2.25"'),
+	(4, '2.5"' ),
+	(4, '2.75"'),
+	(4, '3"'   ),
+	(4, '3.25"'),
+	(4, '3.5"' ),
+	(4, '3.75"'),
+	(4, '4"'   ),
+	(4, '4.25"'),
+	(4, '4.5"' ),
+	(4, '4.75"'),
+	(4, '5"'   ),
+	(4, '5.25"'),
+	(4, '5.5"' ),
+	(4, '5.75"'),
+	(4, '6"'   ),
+	(4, '7"'   ),
+	(4, '10"'  );
+
+/**
+ * Cone-class sizes
+ */
+INSERT INTO sizes (size_class, description) VALUES
+	(5, '10 cu in');
+
+/**
+ * Cup-class sizes
+ */
+INSERT INTO sizes (size_class, description) VALUES
+	(6, '2"'   ),
+	(6, '2.25"'),
+	(6, '2.5"' ),
+	(6, '3"'   ),
+	(6, '3.5"' ),
+	(6, '4"'   ),
+	(6, '6"'   ),
+	(6, 'quart');
+
+/**
+ * ...insert rest of sizes...
+ */
