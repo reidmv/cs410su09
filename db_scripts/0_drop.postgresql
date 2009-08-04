@@ -31,6 +31,7 @@ DROP TABLE inquery_lineitems;
 DROP TABLE inqueries;
 DROP TABLE inquery_messages;
 DROP TABLE pickup_list_lineitems;
+DROP TABLE pickup_list_lineitem_statuses;
 DROP TABLE pickup_lists;
 DROP TABLE invoice_lineitems;
 DROP TABLE invoices;

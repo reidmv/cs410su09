@@ -65,7 +65,7 @@ INSERT INTO sizes (size_class, description) VALUES
  * Bulb-class sizes
  */
 INSERT INTO sizes (size_class, description) VALUES
-	(3, '.'),
+	(3, '.');
 
 /**
  * Cal-class sizes
