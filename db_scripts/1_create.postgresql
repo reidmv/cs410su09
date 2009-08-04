@@ -120,7 +120,7 @@ CREATE TABLE addresses (
 	country           varchar,
 	geographical_zone integer NOT NULL REFERENCES geographical_zones);
 
-COMMENT ON TABLE  addresses IS 'Contains a listing of all the plants we know about.';
+COMMENT ON TABLE  addresses IS 'Addresses associated with various other tables/entities in the database.';
 COMMENT ON COLUMN addresses.address_pkey IS 'The Primary Key for the addresses table.';
 COMMENT ON COLUMN addresses.address IS 'The street address.';
 COMMENT ON COLUMN addresses.city IS 'The city.';
@@ -601,6 +601,10 @@ COMMENT ON COLUMN pickup_lists.pickup_date IS 'The date to pick this stuff up.';
 CREATE TABLE pickup_list_lineitem_statuses (
 	pickup_list_lineitem_status_pkey integer PRIMARY KEY,
 	status                           varchar NOT NULL);
+
+COMMENT ON TABLE  pickup_list_lineitem_statuses IS 'The possible status flags for a lineitem in a pickup list.';
+COMMENT ON COLUMN pickup_list_lineitem_statuses.pickup_list_lineitem_status_pkey IS 'Primary key.';
+COMMENT ON COLUMN pickup_list_lineitem_statuses.status IS 'Text description of this status.';
 
 /**
  * The pickup_list_lineitems table holds the lineitems for a pickup list.
