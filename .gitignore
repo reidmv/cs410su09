@@ -25,6 +25,6 @@
 #                                                                            #
 ##############################################################################
 
-documentation/SchemaSpy/html/*
+doc/SchemaSpy/html/*
 /cp_to_web.sh
 *.swp
