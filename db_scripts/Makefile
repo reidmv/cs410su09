@@ -24,8 +24,8 @@ DB_USER   = reidmv
 DB_NAME   = reidmv
 DB_PASS   = cs410oss
 
-SCHEMASPY_DIR = documentation/SchemaSpy
-DB_SCRIPT_DIR = db_scripts
+SCHEMASPY_DIR = ../doc/SchemaSpy
+DB_SCRIPT_DIR = .
 
 all : drop create insert schemaspy
 
