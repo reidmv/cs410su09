@@ -28,3 +28,5 @@
 doc/SchemaSpy/html/*
 /cp_to_web.sh
 *.swp
+*.o
+/src/broke
