@@ -28,12 +28,8 @@
 doc/SchemaSpy/html/*
 /cp_to_web.sh
 *.swp
+*.o
+/src/broke
 Makefile
 Makefile.in
-/configure
 /autom4te.cache
-/depcomp
-/install-sh
-/missing
-/aclocal.m4
-/config.h.in
