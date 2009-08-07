@@ -30,6 +30,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <gtk/gtk.h>
+#include "constants.h"
 
 /*===========================================================================*/
 /*                            Function Prototypes                            */
@@ -52,7 +53,7 @@ int main (int argc, char * argv[])
 	gtk_init (&argc, &argv);
 
 	builder = gtk_builder_new ();
-	gtk_builder_add_from_file (builder, "broke.glade", NULL);
+	gtk_builder_add_from_file (builder, GLADEFILE_BROKE, NULL);
 	win_main = GTK_WIDGET (gtk_builder_get_object (builder, "main"));
 	gtk_builder_connect_signals (builder, NULL);
 
