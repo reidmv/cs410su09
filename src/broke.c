@@ -28,6 +28,7 @@
  */
 
 #include <gtk/gtk.h>
+#include <libgda/libgda.h>
 #include "common.h"
 
 /*===========================================================================*/
