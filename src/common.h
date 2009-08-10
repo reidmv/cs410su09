@@ -20,12 +20,11 @@
 /*==========================================================================*/
 
 /**
- * @file   constants.h
+ * @file   common.h
  * @author Reid Vandewiele
  *
- *   This file contains #define constants used in the broke program.
+ *   This file contains typedefs and #define constants used in the broke
+ *  program.
  */
 
-/*===========================================================================*/
 #define GLADEFILE_BROKE "data/glade/broke.glade"
-/*===========================================================================*/

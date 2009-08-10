@@ -21,7 +21,7 @@
 
 brokedir=../
 broke_PROGRAMS=broke
-broke_SOURCES=broke.c event_handlers.c constants.h
+broke_SOURCES=broke.c common.h
 broke_LDFLAGS = -export-dynamic
 
 INCLUDES = @GTK_CFLAGS@ @LIBGDA_CFLAGS@

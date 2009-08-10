@@ -349,7 +349,7 @@
       </object>
     </child>
   </object>
-  <object class="GtkAboutDialog" id="dlg_about">
+  <object class="GtkAboutDialog" id="about">
     <property name="border_width">5</property>
     <property name="title" translatable="yes">About Broke</property>
     <property name="window_position">center</property>
