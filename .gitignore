@@ -32,3 +32,4 @@ Makefile
 !/db_scripts/Makefile
 Makefile.in
 /autom4te.cache
+/schemaspy
