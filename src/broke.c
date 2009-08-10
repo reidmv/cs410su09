@@ -39,38 +39,40 @@ void on_win_main_destroy (GtkObject *, gpointer);
 void on_wdw_connect_destroy (GtkObject *, gpointer);
 void on_btn_cancelconnection_clicked (GtkObject *, gpointer);
 void on_btn_connect_clicked (GtkObject *, gpointer);
+static void notice_error (GError *);
 
-static struct top_windows {
-  GtkWidget *wdw_main;
-  GtkWidget *wdw_about;
-} top_windows;
+static struct Toplevel {
+  GtkWidget *window_main;
+  GtkWidget *window_about;
+} Toplevel;
 
 /**
  * @brief The entry point for the program.
  * @param argc The number of arguments given.
  * @param argv The arguments vector.
  */
-int main (int argc, char * argv[])
+int
+main (int argc, char * argv[])
 {
-	GtkWidget  **wdw_main;
-	GtkWidget  **wdw_about;
 	GtkBuilder *builder;
+	GtkWidget  *wdw_main;
+	GtkWidget  *wdw_about;
 
+	/* GTK+ initialization */
 	gtk_init (&argc, &argv);
 
-	wdw_main  = &top_windows.wdw_main;
-	wdw_about = &top_windows.wdw_about; 
-
 	builder = gtk_builder_new ();
-	gtk_builder_add_from_file (builder, GLADEFILE_BROKE, NULL);
-	*wdw_main = GTK_WIDGET (gtk_builder_get_object (builder, "main"));
-	*wdw_about = GTK_WIDGET (gtk_builder_get_object (builder, "about"));
+	gtk_builder_add_from_file (builder, GLADE_FILE_BROKE, NULL);
+	wdw_main = GTK_WIDGET (gtk_builder_get_object (builder, UI_WINDOW_MAIN));
+	wdw_about = GTK_WIDGET (gtk_builder_get_object (builder, UI_WINDOW_ABOUT));
 	gtk_builder_connect_signals (builder, NULL);
-
-	gtk_widget_show (*wdw_main);       
-	gtk_main ();
-
 	g_object_unref (G_OBJECT (builder));
+
+	Toplevel.window_main = wdw_main;
+	Toplevel.window_about = wdw_about;
+
+	gtk_widget_show (wdw_main);       
+	gtk_main ();
 
 	return 0;
 }
@@ -80,7 +82,8 @@ int main (int argc, char * argv[])
  * @param object The GtkObject we'll need to dismember.
  * @param user_data Data passed in; this function expects none
  */
-void on_win_main_destroy (GtkObject *object, gpointer user_data)
+void 
+on_win_main_destroy (GtkObject *object, gpointer user_data)
 {
 	gtk_main_quit ();
 	return;
@@ -92,11 +95,12 @@ void on_win_main_destroy (GtkObject *object, gpointer user_data)
  * @param object The GtkObject we'll need to dismember.
  * @param user_data Data passed in; this function expects none
  */
-void on_helpmenu_about_activate (GtkWidget *widget, gpointer user_data)
+void 
+on_helpmenu_about_activate (GtkWidget *widget, gpointer user_data)
 {
 	GtkWidget  *wdw_about;
 
-	wdw_about = top_windows.wdw_about;
+	wdw_about = Toplevel.window_about;
 	gtk_window_present (GTK_WINDOW (wdw_about));
 
 	return;
@@ -107,7 +111,8 @@ void on_helpmenu_about_activate (GtkWidget *widget, gpointer user_data)
  * @param object A GtkObject
  * @param user_data Data passed in
  */
-void on_btn_cancelconnection_clicked (GtkObject *widget, gpointer user_data)
+void 
+on_btn_cancelconnection_clicked (GtkObject *widget, gpointer user_data)
 {
 	gtk_main_quit ();
 	return;
@@ -118,10 +123,21 @@ void on_btn_cancelconnection_clicked (GtkObject *widget, gpointer user_data)
  * @param object A GtkObject
  * @param user_data Data passed in
  */
-void on_btn_connect_clicked (GtkObject *object, gpointer user_data)
+void 
+on_btn_connect_clicked (GtkObject *object, gpointer user_data)
 
 {
 	printf ("%s\n", "on_btn_connect_clicked: Not Implemented");
 	return;
+}
+
+/**
+ * @brief Generic error printing function
+ * @param error The error message
+ */
+static void
+notice_error (GError *error)
+{ 
+  g_error ("Error: %s\n", error && error->message ? error->message : "No detail");
 }
 
