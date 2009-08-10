@@ -61,6 +61,7 @@ main (int argc, char * argv[])
 	/* GTK+ initialization */
 	gtk_init (&argc, &argv);
 
+	/* Instantiate the main window */
 	builder = gtk_builder_new ();
 	gtk_builder_add_from_file (builder, GLADE_FILE_BROKE, NULL);
 	wdw_main = GTK_WIDGET (gtk_builder_get_object (builder, UI_WINDOW_MAIN));

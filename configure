@@ -3676,12 +3676,12 @@ if test -n "$PKG_CONFIG"; then
         pkg_cv_LIBGDA_CFLAGS="$LIBGDA_CFLAGS"
     else
         if test -n "$PKG_CONFIG" && \
-    { ($as_echo "$as_me:$LINENO: \$PKG_CONFIG --exists --print-errors \"libgda-3.0\"") >&5
-  ($PKG_CONFIG --exists --print-errors "libgda-3.0") 2>&5
+    { ($as_echo "$as_me:$LINENO: \$PKG_CONFIG --exists --print-errors \"libgda-4.0\"") >&5
+  ($PKG_CONFIG --exists --print-errors "libgda-4.0") 2>&5
   ac_status=$?
   $as_echo "$as_me:$LINENO: \$? = $ac_status" >&5
   (exit $ac_status); }; then
-  pkg_cv_LIBGDA_CFLAGS=`$PKG_CONFIG --cflags "libgda-3.0" 2>/dev/null`
+  pkg_cv_LIBGDA_CFLAGS=`$PKG_CONFIG --cflags "libgda-4.0" 2>/dev/null`
 else
   pkg_failed=yes
 fi
@@ -3694,12 +3694,12 @@ if test -n "$PKG_CONFIG"; then
         pkg_cv_LIBGDA_LIBS="$LIBGDA_LIBS"
     else
         if test -n "$PKG_CONFIG" && \
-    { ($as_echo "$as_me:$LINENO: \$PKG_CONFIG --exists --print-errors \"libgda-3.0\"") >&5
-  ($PKG_CONFIG --exists --print-errors "libgda-3.0") 2>&5
+    { ($as_echo "$as_me:$LINENO: \$PKG_CONFIG --exists --print-errors \"libgda-4.0\"") >&5
+  ($PKG_CONFIG --exists --print-errors "libgda-4.0") 2>&5
   ac_status=$?
   $as_echo "$as_me:$LINENO: \$? = $ac_status" >&5
   (exit $ac_status); }; then
-  pkg_cv_LIBGDA_LIBS=`$PKG_CONFIG --libs "libgda-3.0" 2>/dev/null`
+  pkg_cv_LIBGDA_LIBS=`$PKG_CONFIG --libs "libgda-4.0" 2>/dev/null`
 else
   pkg_failed=yes
 fi
@@ -3718,14 +3718,14 @@ else
         _pkg_short_errors_supported=no
 fi
         if test $_pkg_short_errors_supported = yes; then
-	        LIBGDA_PKG_ERRORS=`$PKG_CONFIG --short-errors --errors-to-stdout --print-errors "libgda-3.0"`
+	        LIBGDA_PKG_ERRORS=`$PKG_CONFIG --short-errors --errors-to-stdout --print-errors "libgda-4.0"`
         else
-	        LIBGDA_PKG_ERRORS=`$PKG_CONFIG --errors-to-stdout --print-errors "libgda-3.0"`
+	        LIBGDA_PKG_ERRORS=`$PKG_CONFIG --errors-to-stdout --print-errors "libgda-4.0"`
         fi
 	# Put the nasty error message in config.log where it belongs
 	echo "$LIBGDA_PKG_ERRORS" >&5
 
-	{ { $as_echo "$as_me:$LINENO: error: Package requirements (libgda-3.0) were not met:
+	{ { $as_echo "$as_me:$LINENO: error: Package requirements (libgda-4.0) were not met:
 
 $LIBGDA_PKG_ERRORS
 
@@ -3736,7 +3736,7 @@ Alternatively, you may set the environment variables LIBGDA_CFLAGS
 and LIBGDA_LIBS to avoid the need to call pkg-config.
 See the pkg-config man page for more details.
 " >&5
-$as_echo "$as_me: error: Package requirements (libgda-3.0) were not met:
+$as_echo "$as_me: error: Package requirements (libgda-4.0) were not met:
 
 $LIBGDA_PKG_ERRORS
 
