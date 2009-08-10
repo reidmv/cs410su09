@@ -27,6 +27,8 @@
  *  program.
  */
 
+#define BROKE             "Broke"
+#define VERSION           "0.1"
 #define GLADE_FILE_BROKE  "data/glade/broke.glade"
 #define UI_WINDOW_MAIN    "main"
 #define UI_WINDOW_ABOUT   "about"

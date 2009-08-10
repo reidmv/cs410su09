@@ -43,8 +43,9 @@ void on_btn_connect_clicked (GtkObject *, gpointer);
 static void notice_error (GError *);
 
 static struct Toplevel {
-  GtkWidget *window_main;
-  GtkWidget *window_about;
+	GtkWidget *window_main;
+	GtkWidget *window_about;
+	GdaConnection *db;
 } Toplevel;
 
 /**
@@ -59,8 +60,9 @@ main (int argc, char * argv[])
 	GtkWidget  *wdw_main;
 	GtkWidget  *wdw_about;
 
-	/* GTK+ initialization */
+	/* libgda, GTK+ initialization */
 	gtk_init (&argc, &argv);
+	gda_init(BROKE, VERSION, argc, argv);
 
 	/* Instantiate the main window */
 	builder = gtk_builder_new ();

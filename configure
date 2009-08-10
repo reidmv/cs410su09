@@ -642,6 +642,8 @@ LIBOBJS
 EGREP
 GREP
 CPP
+LIBGNOMEDB_LIBS
+LIBGNOMEDB_CFLAGS
 LIBGDA_LIBS
 LIBGDA_CFLAGS
 GTK_LIBS
@@ -741,6 +743,8 @@ GTK_CFLAGS
 GTK_LIBS
 LIBGDA_CFLAGS
 LIBGDA_LIBS
+LIBGNOMEDB_CFLAGS
+LIBGNOMEDB_LIBS
 CPP'
 
 
@@ -1385,6 +1389,10 @@ Some influential environment variables:
   LIBGDA_CFLAGS
               C compiler flags for LIBGDA, overriding pkg-config
   LIBGDA_LIBS linker flags for LIBGDA, overriding pkg-config
+  LIBGNOMEDB_CFLAGS
+              C compiler flags for LIBGNOMEDB, overriding pkg-config
+  LIBGNOMEDB_LIBS
+              linker flags for LIBGNOMEDB, overriding pkg-config
   CPP         C preprocessor
 
 Use these variables to override the choices made by `configure' or to help
@@ -3676,12 +3684,12 @@ if test -n "$PKG_CONFIG"; then
         pkg_cv_LIBGDA_CFLAGS="$LIBGDA_CFLAGS"
     else
         if test -n "$PKG_CONFIG" && \
-    { ($as_echo "$as_me:$LINENO: \$PKG_CONFIG --exists --print-errors \"libgda-4.0\"") >&5
-  ($PKG_CONFIG --exists --print-errors "libgda-4.0") 2>&5
+    { ($as_echo "$as_me:$LINENO: \$PKG_CONFIG --exists --print-errors \"libgda-3.0\"") >&5
+  ($PKG_CONFIG --exists --print-errors "libgda-3.0") 2>&5
   ac_status=$?
   $as_echo "$as_me:$LINENO: \$? = $ac_status" >&5
   (exit $ac_status); }; then
-  pkg_cv_LIBGDA_CFLAGS=`$PKG_CONFIG --cflags "libgda-4.0" 2>/dev/null`
+  pkg_cv_LIBGDA_CFLAGS=`$PKG_CONFIG --cflags "libgda-3.0" 2>/dev/null`
 else
   pkg_failed=yes
 fi
@@ -3694,12 +3702,12 @@ if test -n "$PKG_CONFIG"; then
         pkg_cv_LIBGDA_LIBS="$LIBGDA_LIBS"
     else
         if test -n "$PKG_CONFIG" && \
-    { ($as_echo "$as_me:$LINENO: \$PKG_CONFIG --exists --print-errors \"libgda-4.0\"") >&5
-  ($PKG_CONFIG --exists --print-errors "libgda-4.0") 2>&5
+    { ($as_echo "$as_me:$LINENO: \$PKG_CONFIG --exists --print-errors \"libgda-3.0\"") >&5
+  ($PKG_CONFIG --exists --print-errors "libgda-3.0") 2>&5
   ac_status=$?
   $as_echo "$as_me:$LINENO: \$? = $ac_status" >&5
   (exit $ac_status); }; then
-  pkg_cv_LIBGDA_LIBS=`$PKG_CONFIG --libs "libgda-4.0" 2>/dev/null`
+  pkg_cv_LIBGDA_LIBS=`$PKG_CONFIG --libs "libgda-3.0" 2>/dev/null`
 else
   pkg_failed=yes
 fi
@@ -3718,14 +3726,14 @@ else
         _pkg_short_errors_supported=no
 fi
         if test $_pkg_short_errors_supported = yes; then
-	        LIBGDA_PKG_ERRORS=`$PKG_CONFIG --short-errors --errors-to-stdout --print-errors "libgda-4.0"`
+	        LIBGDA_PKG_ERRORS=`$PKG_CONFIG --short-errors --errors-to-stdout --print-errors "libgda-3.0"`
         else
-	        LIBGDA_PKG_ERRORS=`$PKG_CONFIG --errors-to-stdout --print-errors "libgda-4.0"`
+	        LIBGDA_PKG_ERRORS=`$PKG_CONFIG --errors-to-stdout --print-errors "libgda-3.0"`
         fi
 	# Put the nasty error message in config.log where it belongs
 	echo "$LIBGDA_PKG_ERRORS" >&5
 
-	{ { $as_echo "$as_me:$LINENO: error: Package requirements (libgda-4.0) were not met:
+	{ { $as_echo "$as_me:$LINENO: error: Package requirements (libgda-3.0) were not met:
 
 $LIBGDA_PKG_ERRORS
 
@@ -3736,7 +3744,7 @@ Alternatively, you may set the environment variables LIBGDA_CFLAGS
 and LIBGDA_LIBS to avoid the need to call pkg-config.
 See the pkg-config man page for more details.
 " >&5
-$as_echo "$as_me: error: Package requirements (libgda-4.0) were not met:
+$as_echo "$as_me: error: Package requirements (libgda-3.0) were not met:
 
 $LIBGDA_PKG_ERRORS
 
@@ -3775,6 +3783,121 @@ See \`config.log' for more details." >&2;}
 else
 	LIBGDA_CFLAGS=$pkg_cv_LIBGDA_CFLAGS
 	LIBGDA_LIBS=$pkg_cv_LIBGDA_LIBS
+        { $as_echo "$as_me:$LINENO: result: yes" >&5
+$as_echo "yes" >&6; }
+	:
+fi
+
+
+
+pkg_failed=no
+{ $as_echo "$as_me:$LINENO: checking for LIBGNOMEDB" >&5
+$as_echo_n "checking for LIBGNOMEDB... " >&6; }
+
+if test -n "$PKG_CONFIG"; then
+    if test -n "$LIBGNOMEDB_CFLAGS"; then
+        pkg_cv_LIBGNOMEDB_CFLAGS="$LIBGNOMEDB_CFLAGS"
+    else
+        if test -n "$PKG_CONFIG" && \
+    { ($as_echo "$as_me:$LINENO: \$PKG_CONFIG --exists --print-errors \"libgnomedb-3.0\"") >&5
+  ($PKG_CONFIG --exists --print-errors "libgnomedb-3.0") 2>&5
+  ac_status=$?
+  $as_echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); }; then
+  pkg_cv_LIBGNOMEDB_CFLAGS=`$PKG_CONFIG --cflags "libgnomedb-3.0" 2>/dev/null`
+else
+  pkg_failed=yes
+fi
+    fi
+else
+	pkg_failed=untried
+fi
+if test -n "$PKG_CONFIG"; then
+    if test -n "$LIBGNOMEDB_LIBS"; then
+        pkg_cv_LIBGNOMEDB_LIBS="$LIBGNOMEDB_LIBS"
+    else
+        if test -n "$PKG_CONFIG" && \
+    { ($as_echo "$as_me:$LINENO: \$PKG_CONFIG --exists --print-errors \"libgnomedb-3.0\"") >&5
+  ($PKG_CONFIG --exists --print-errors "libgnomedb-3.0") 2>&5
+  ac_status=$?
+  $as_echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); }; then
+  pkg_cv_LIBGNOMEDB_LIBS=`$PKG_CONFIG --libs "libgnomedb-3.0" 2>/dev/null`
+else
+  pkg_failed=yes
+fi
+    fi
+else
+	pkg_failed=untried
+fi
+
+
+
+if test $pkg_failed = yes; then
+
+if $PKG_CONFIG --atleast-pkgconfig-version 0.20; then
+        _pkg_short_errors_supported=yes
+else
+        _pkg_short_errors_supported=no
+fi
+        if test $_pkg_short_errors_supported = yes; then
+	        LIBGNOMEDB_PKG_ERRORS=`$PKG_CONFIG --short-errors --errors-to-stdout --print-errors "libgnomedb-3.0"`
+        else
+	        LIBGNOMEDB_PKG_ERRORS=`$PKG_CONFIG --errors-to-stdout --print-errors "libgnomedb-3.0"`
+        fi
+	# Put the nasty error message in config.log where it belongs
+	echo "$LIBGNOMEDB_PKG_ERRORS" >&5
+
+	{ { $as_echo "$as_me:$LINENO: error: Package requirements (libgnomedb-3.0) were not met:
+
+$LIBGNOMEDB_PKG_ERRORS
+
+Consider adjusting the PKG_CONFIG_PATH environment variable if you
+installed software in a non-standard prefix.
+
+Alternatively, you may set the environment variables LIBGNOMEDB_CFLAGS
+and LIBGNOMEDB_LIBS to avoid the need to call pkg-config.
+See the pkg-config man page for more details.
+" >&5
+$as_echo "$as_me: error: Package requirements (libgnomedb-3.0) were not met:
+
+$LIBGNOMEDB_PKG_ERRORS
+
+Consider adjusting the PKG_CONFIG_PATH environment variable if you
+installed software in a non-standard prefix.
+
+Alternatively, you may set the environment variables LIBGNOMEDB_CFLAGS
+and LIBGNOMEDB_LIBS to avoid the need to call pkg-config.
+See the pkg-config man page for more details.
+" >&2;}
+   { (exit 1); exit 1; }; }
+elif test $pkg_failed = untried; then
+	{ { $as_echo "$as_me:$LINENO: error: in \`$ac_pwd':" >&5
+$as_echo "$as_me: error: in \`$ac_pwd':" >&2;}
+{ { $as_echo "$as_me:$LINENO: error: The pkg-config script could not be found or is too old.  Make sure it
+is in your PATH or set the PKG_CONFIG environment variable to the full
+path to pkg-config.
+
+Alternatively, you may set the environment variables LIBGNOMEDB_CFLAGS
+and LIBGNOMEDB_LIBS to avoid the need to call pkg-config.
+See the pkg-config man page for more details.
+
+To get pkg-config, see <http://pkg-config.freedesktop.org/>.
+See \`config.log' for more details." >&5
+$as_echo "$as_me: error: The pkg-config script could not be found or is too old.  Make sure it
+is in your PATH or set the PKG_CONFIG environment variable to the full
+path to pkg-config.
+
+Alternatively, you may set the environment variables LIBGNOMEDB_CFLAGS
+and LIBGNOMEDB_LIBS to avoid the need to call pkg-config.
+See the pkg-config man page for more details.
+
+To get pkg-config, see <http://pkg-config.freedesktop.org/>.
+See \`config.log' for more details." >&2;}
+   { (exit 1); exit 1; }; }; }
+else
+	LIBGNOMEDB_CFLAGS=$pkg_cv_LIBGNOMEDB_CFLAGS
+	LIBGNOMEDB_LIBS=$pkg_cv_LIBGNOMEDB_LIBS
         { $as_echo "$as_me:$LINENO: result: yes" >&5
 $as_echo "yes" >&6; }
 	:
