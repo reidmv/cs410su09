@@ -26,7 +26,6 @@ DB_HOST       = db.cecs.pdx.edu
 DB_USER       = reidmv
 DB_NAME       = reidmv
 DB_PASS       = cs410oss
-DB_SCRIPT_DIR = .
 
 # Available targets are:
 # `drop`   - drop all broke tables from the database.
@@ -45,17 +44,17 @@ all : drop create insert
 
 drop :
 	export PGPASSWORD=${DB_PASS};	\
-	psql -h ${DB_HOST} -d ${DB_NAME} -U ${DB_USER} -f ${DB_SCRIPT_DIR}/0_drop.postgresql;
+	psql -h ${DB_HOST} -d ${DB_NAME} -U ${DB_USER} -f 0_drop.postgresql;
 
-create : drop
+create : 
 	export PGPASSWORD=${DB_PASS};	\
-	psql -h ${DB_HOST} -d ${DB_NAME} -U ${DB_USER} -f ${DB_SCRIPT_DIR}/1_create.postgresql;
+	psql -h ${DB_HOST} -d ${DB_NAME} -U ${DB_USER} -f 1_create.postgresql;
 
-insert : create
+insert :
 	export PGPASSWORD=${DB_PASS};	\
 	{ \
-	  psql -h ${DB_HOST} -d ${DB_NAME} -U ${DB_USER} -f ${DB_SCRIPT_DIR}/2_insert_sizes.postgresql; \
-		psql -h ${DB_HOST} -d ${DB_NAME} -U ${DB_USER} -f ${DB_SCRIPT_DIR}/2_insert_plants.postgresql; \
+		psql -h ${DB_HOST} -d ${DB_NAME} -U ${DB_USER} -f 2_insert_sizes.postgresql; \
+		psql -h ${DB_HOST} -d ${DB_NAME} -U ${DB_USER} -f 2_insert_plants.postgresql; \
 	};
 
 schemaspy :
