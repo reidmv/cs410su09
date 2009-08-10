@@ -25,6 +25,7 @@ DB_NAME   = reidmv
 DB_PASS   = cs410oss
 
 SCHEMASPY_DIR = ../doc/SchemaSpy
+SCHEMA_OUTDIR = ../doc/schema
 DB_SCRIPT_DIR = .
 
 all : drop create insert schemaspy
@@ -48,5 +49,6 @@ clean : drop
 	rm -rf ${SCHEMASPY_DIR}/html/*;
 
 schemaspy :
-	java -jar ${SCHEMASPY_DIR}/schemaSpy_4.1.1.jar -t pgsql -host ${DB_HOST} -db ${DB_NAME} -s public -u ${DB_USER} -p ${DB_PASS} -o ${SCHEMASPY_DIR}/html/ -dp ${SCHEMASPY_DIR}/postgresql-8.3-604.jdbc3.jar -hq; \
-	chmod -R a+r ${SCHEMASPY_DIR}/html;
+	[ -d "${SCHEMA_OUTDIR}" ] || mkdir "${SCHEMA_OUTDIR}"; \
+	java -jar ${SCHEMASPY_DIR}/schemaSpy_4.1.1.jar -t pgsql -host ${DB_HOST} -db ${DB_NAME} -s public -u ${DB_USER} -p ${DB_PASS} -o ${SCHEMA_OUTDIR}/ -dp ${SCHEMASPY_DIR}/postgresql-8.3-604.jdbc3.jar -hq; \
+	chmod -R a+r ${SCHEMA_OUTDIR};
