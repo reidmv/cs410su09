@@ -27,7 +27,6 @@
  * it's little more than a seed file since it really doesn't do anything.
  */
 
-#include <malloc.h>
 #include <gtk/gtk.h>
 #include "common.h"
 
@@ -59,8 +58,6 @@ int main (int argc, char * argv[])
 
 	gtk_init (&argc, &argv);
 
-	top_windows.wdw_main  = (GtkWidget *) malloc (sizeof (GtkWidget));
-	top_windows.wdw_about = (GtkWidget *) malloc (sizeof (GtkWidget));
 	wdw_main  = &top_windows.wdw_main;
 	wdw_about = &top_windows.wdw_about; 
 
