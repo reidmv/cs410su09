@@ -29,6 +29,9 @@
 
 #include <gtk/gtk.h>
 #include <libgda/libgda.h>
+#include <libgnomedb/libgnomedb.h>
+#include <libgnomedb/gnome-db-util.h>
+#include "broke_ui.h"
 #include "common.h"
 
 /*===========================================================================*/
@@ -42,11 +45,7 @@ void on_btn_cancelconnection_clicked (GtkObject *, gpointer);
 void on_btn_connect_clicked (GtkObject *, gpointer);
 static void notice_error (GError *);
 
-static struct Toplevel {
-	GtkWidget *window_main;
-	GtkWidget *window_about;
-	GdaConnection *db;
-} Toplevel;
+GdaDict *db_dict;
 
 /**
  * @brief The entry point for the program.
@@ -56,29 +55,60 @@ static struct Toplevel {
 int
 main (int argc, char * argv[])
 {
-	GtkBuilder *builder;
-	GtkWidget  *wdw_main;
-	GtkWidget  *wdw_about;
+	BrokeUIMain *main_window;
+	GtkWidget   *login;
 
 	/* libgda, GTK+ initialization */
 	gtk_init (&argc, &argv);
 	gda_init(BROKE, VERSION, argc, argv);
 
-	/* Instantiate the main window */
-	builder = gtk_builder_new ();
-	gtk_builder_add_from_file (builder, GLADE_FILE_BROKE, NULL);
-	wdw_main = GTK_WIDGET (gtk_builder_get_object (builder, UI_WINDOW_MAIN));
-	wdw_about = GTK_WIDGET (gtk_builder_get_object (builder, UI_WINDOW_ABOUT));
-	gtk_builder_connect_signals (builder, NULL);
-	g_object_unref (G_OBJECT (builder));
+	main_window = BROKE_UI_MAIN (broke_ui_get (BROKE_WINDOW_MAIN));
+	login = main_window->login;
 
-	Toplevel.window_main = wdw_main;
-	Toplevel.window_about = wdw_about;
+	gnome_db_login_set_enable_create_button ((GnomeDbLogin *) login, TRUE);
 
-	gtk_widget_show (wdw_main);       
+	gtk_widget_show (main_window->window);       
 	gtk_main ();
 
 	return 0;
+}
+
+/**
+ * @brief Fire up the connection to the selected datasource.
+ * @param login A GnomeDbLogin widget from which to obtain login credentials
+ */
+static GdaConnection *
+open_connection (GnomeDbLogin *login) 
+{
+	GdaClient     *client;
+	GdaConnection *connection;
+	const gchar         *dsn;
+	const gchar         *username;
+	const gchar         *password;
+	GError        *error = NULL;
+
+	dsn = gnome_db_login_get_dsn (login);
+	username = gnome_db_login_get_username (login);
+	password = gnome_db_login_get_password (login);
+
+	/*
+	list_providers ();
+	list_datasources ();
+	*/
+
+	client = gda_client_new ();
+	connection = gda_client_open_connection (client,
+	                                         dsn,
+	                                         username,
+	                                         password,
+                                           GDA_CONNECTION_OPTIONS_NONE,
+	                                         &error);
+	
+	if (! connection) {
+		g_print ("Failed to connect to %s\n", dsn);
+	}
+
+	return connection;
 }
 
 /**
@@ -102,10 +132,10 @@ on_win_main_destroy (GtkObject *object, gpointer user_data)
 void 
 on_helpmenu_about_activate (GtkWidget *widget, gpointer user_data)
 {
-	GtkWidget  *wdw_about;
+	BrokeUIAbout *about_window;
 
-	wdw_about = Toplevel.window_about;
-	gtk_window_present (GTK_WINDOW (wdw_about));
+	about_window = BROKE_UI_ABOUT (broke_ui_get (BROKE_WINDOW_ABOUT));
+	gtk_window_present (GTK_WINDOW (about_window->window));
 
 	return;
 }
@@ -129,9 +159,8 @@ on_btn_cancelconnection_clicked (GtkObject *widget, gpointer user_data)
  */
 void 
 on_btn_connect_clicked (GtkObject *object, gpointer user_data)
-
 {
-	printf ("%s\n", "on_btn_connect_clicked: Not Implemented");
+	g_printerr ("on_btn_connect_clicked: Not Yet Implemented.\n");
 	return;
 }
 

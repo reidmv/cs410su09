@@ -600,7 +600,7 @@ PACKAGE_VERSION='0.1'
 PACKAGE_STRING='Broke 0.1'
 PACKAGE_BUGREPORT='reidmv@pdx.edu'
 
-ac_unique_file="src/broke.c"
+ac_unique_file="src/main.c"
 # Factoring default headers for most tests.
 ac_includes_default="\
 #include <stdio.h>
@@ -3675,6 +3675,7 @@ fi
 
 
 
+
 pkg_failed=no
 { $as_echo "$as_me:$LINENO: checking for LIBGDA" >&5
 $as_echo_n "checking for LIBGDA... " >&6; }
@@ -3787,6 +3788,7 @@ else
 $as_echo "yes" >&6; }
 	:
 fi
+
 
 
 
