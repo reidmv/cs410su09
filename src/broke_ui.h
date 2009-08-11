@@ -20,17 +20,42 @@
 /*==========================================================================*/
 
 /**
- * @file   common.h
+ * @file   broke_ui.h
  * @author Reid Vandewiele
  *
- *   This file contains typedefs and #define constants used in the broke
- *  program.
+ *   These functions return specific structs holding reference to widgets in
+ * windows built by GtkBuilder from glade-generated xml files.
  */
 
-#ifndef __COMMON_H__
-#define __COMMON_H__
+#ifndef __BROKE_UI_H__
+#define __BROKE_UI_H__
 
-#define BROKE             "Broke"
-#define VERSION           "0.1"
+#define BROKE_UI(var)       ((BrokeUI      *) var)
+#define BROKE_UI_MAIN(var)  ((BrokeUIMain  *) var)
+#define BROKE_UI_ABOUT(var) ((BrokeUIAbout *) var)
 
+typedef enum {
+	BROKE_WINDOW_MAIN,
+	BROKE_WINDOW_ABOUT
+} BrokeUIWindow;
+
+typedef struct BrokeUI {
+	BrokeUIWindow type;
+	GtkWidget *window;
+} BrokeUI;
+
+typedef struct BrokeUIMain {
+	BrokeUIWindow type;
+	GtkWidget *window;
+	GtkWidget *login;
+} BrokeUIMain;
+
+typedef struct BrokeUIAbout {
+	BrokeUIWindow type;
+	GtkWidget *window;
+} BrokeUIAbout;
+
+BrokeUI *broke_ui_get   (BrokeUIWindow);
+void     broke_ui_unref (BrokeUI *);
+ 
 #endif

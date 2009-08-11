@@ -26,17 +26,19 @@ broke_PROGRAMS=\
 
 broke_SOURCES=\
 	main.c \
-	common.h
+	broke_ui.c \
+	common.h \
+	broke_ui.h
 
-broke_LDFLAGS =\
+broke_LDFLAGS=\
 	-export-dynamic
 
-INCLUDES =\
+INCLUDES=\
 	@GTK_CFLAGS@ \
 	@LIBGDA_CFLAGS@ \
 	@LIBGNOMEDB_CFLAGS@
 
-broke_LDADD =\
+broke_LDADD=\
 	@GTK_LIBS@ \
 	@LIBGDA_LIBS@ \
 	@LIBGNOMEDB_LIBS@
