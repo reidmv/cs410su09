@@ -600,7 +600,7 @@ PACKAGE_VERSION='0.1'
 PACKAGE_STRING='Broke 0.1'
 PACKAGE_BUGREPORT='reidmv@pdx.edu'
 
-ac_unique_file="src/broke.c"
+ac_unique_file="src/main.c"
 # Factoring default headers for most tests.
 ac_includes_default="\
 #include <stdio.h>
@@ -648,6 +648,8 @@ LIBGDA_LIBS
 LIBGDA_CFLAGS
 GTK_LIBS
 GTK_CFLAGS
+GLIB_LIBS
+GLIB_CFLAGS
 PKG_CONFIG
 am__fastdepCC_FALSE
 am__fastdepCC_TRUE
@@ -739,6 +741,8 @@ LDFLAGS
 LIBS
 CPPFLAGS
 PKG_CONFIG
+GLIB_CFLAGS
+GLIB_LIBS
 GTK_CFLAGS
 GTK_LIBS
 LIBGDA_CFLAGS
@@ -1384,6 +1388,8 @@ Some influential environment variables:
   CPPFLAGS    C/C++/Objective C preprocessor flags, e.g. -I<include dir> if
               you have headers in a nonstandard directory <include dir>
   PKG_CONFIG  path to pkg-config utility
+  GLIB_CFLAGS C compiler flags for GLIB, overriding pkg-config
+  GLIB_LIBS   linker flags for GLIB, overriding pkg-config
   GTK_CFLAGS  C compiler flags for GTK, overriding pkg-config
   GTK_LIBS    linker flags for GTK, overriding pkg-config
   LIBGDA_CFLAGS
@@ -3561,6 +3567,122 @@ $as_echo "no" >&6; }
 fi
 
 pkg_failed=no
+{ $as_echo "$as_me:$LINENO: checking for GLIB" >&5
+$as_echo_n "checking for GLIB... " >&6; }
+
+if test -n "$PKG_CONFIG"; then
+    if test -n "$GLIB_CFLAGS"; then
+        pkg_cv_GLIB_CFLAGS="$GLIB_CFLAGS"
+    else
+        if test -n "$PKG_CONFIG" && \
+    { ($as_echo "$as_me:$LINENO: \$PKG_CONFIG --exists --print-errors \"glib-2.0 >= 2.12.0\"") >&5
+  ($PKG_CONFIG --exists --print-errors "glib-2.0 >= 2.12.0") 2>&5
+  ac_status=$?
+  $as_echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); }; then
+  pkg_cv_GLIB_CFLAGS=`$PKG_CONFIG --cflags "glib-2.0 >= 2.12.0" 2>/dev/null`
+else
+  pkg_failed=yes
+fi
+    fi
+else
+	pkg_failed=untried
+fi
+if test -n "$PKG_CONFIG"; then
+    if test -n "$GLIB_LIBS"; then
+        pkg_cv_GLIB_LIBS="$GLIB_LIBS"
+    else
+        if test -n "$PKG_CONFIG" && \
+    { ($as_echo "$as_me:$LINENO: \$PKG_CONFIG --exists --print-errors \"glib-2.0 >= 2.12.0\"") >&5
+  ($PKG_CONFIG --exists --print-errors "glib-2.0 >= 2.12.0") 2>&5
+  ac_status=$?
+  $as_echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); }; then
+  pkg_cv_GLIB_LIBS=`$PKG_CONFIG --libs "glib-2.0 >= 2.12.0" 2>/dev/null`
+else
+  pkg_failed=yes
+fi
+    fi
+else
+	pkg_failed=untried
+fi
+
+
+
+if test $pkg_failed = yes; then
+
+if $PKG_CONFIG --atleast-pkgconfig-version 0.20; then
+        _pkg_short_errors_supported=yes
+else
+        _pkg_short_errors_supported=no
+fi
+        if test $_pkg_short_errors_supported = yes; then
+	        GLIB_PKG_ERRORS=`$PKG_CONFIG --short-errors --errors-to-stdout --print-errors "glib-2.0 >= 2.12.0"`
+        else
+	        GLIB_PKG_ERRORS=`$PKG_CONFIG --errors-to-stdout --print-errors "glib-2.0 >= 2.12.0"`
+        fi
+	# Put the nasty error message in config.log where it belongs
+	echo "$GLIB_PKG_ERRORS" >&5
+
+	{ { $as_echo "$as_me:$LINENO: error: Package requirements (glib-2.0 >= 2.12.0) were not met:
+
+$GLIB_PKG_ERRORS
+
+Consider adjusting the PKG_CONFIG_PATH environment variable if you
+installed software in a non-standard prefix.
+
+Alternatively, you may set the environment variables GLIB_CFLAGS
+and GLIB_LIBS to avoid the need to call pkg-config.
+See the pkg-config man page for more details.
+" >&5
+$as_echo "$as_me: error: Package requirements (glib-2.0 >= 2.12.0) were not met:
+
+$GLIB_PKG_ERRORS
+
+Consider adjusting the PKG_CONFIG_PATH environment variable if you
+installed software in a non-standard prefix.
+
+Alternatively, you may set the environment variables GLIB_CFLAGS
+and GLIB_LIBS to avoid the need to call pkg-config.
+See the pkg-config man page for more details.
+" >&2;}
+   { (exit 1); exit 1; }; }
+elif test $pkg_failed = untried; then
+	{ { $as_echo "$as_me:$LINENO: error: in \`$ac_pwd':" >&5
+$as_echo "$as_me: error: in \`$ac_pwd':" >&2;}
+{ { $as_echo "$as_me:$LINENO: error: The pkg-config script could not be found or is too old.  Make sure it
+is in your PATH or set the PKG_CONFIG environment variable to the full
+path to pkg-config.
+
+Alternatively, you may set the environment variables GLIB_CFLAGS
+and GLIB_LIBS to avoid the need to call pkg-config.
+See the pkg-config man page for more details.
+
+To get pkg-config, see <http://pkg-config.freedesktop.org/>.
+See \`config.log' for more details." >&5
+$as_echo "$as_me: error: The pkg-config script could not be found or is too old.  Make sure it
+is in your PATH or set the PKG_CONFIG environment variable to the full
+path to pkg-config.
+
+Alternatively, you may set the environment variables GLIB_CFLAGS
+and GLIB_LIBS to avoid the need to call pkg-config.
+See the pkg-config man page for more details.
+
+To get pkg-config, see <http://pkg-config.freedesktop.org/>.
+See \`config.log' for more details." >&2;}
+   { (exit 1); exit 1; }; }; }
+else
+	GLIB_CFLAGS=$pkg_cv_GLIB_CFLAGS
+	GLIB_LIBS=$pkg_cv_GLIB_LIBS
+        { $as_echo "$as_me:$LINENO: result: yes" >&5
+$as_echo "yes" >&6; }
+	:
+fi
+
+
+
+
+pkg_failed=no
 { $as_echo "$as_me:$LINENO: checking for GTK" >&5
 $as_echo_n "checking for GTK... " >&6; }
 
@@ -3672,6 +3794,7 @@ else
 $as_echo "yes" >&6; }
 	:
 fi
+
 
 
 
@@ -3787,6 +3910,7 @@ else
 $as_echo "yes" >&6; }
 	:
 fi
+
 
 
 

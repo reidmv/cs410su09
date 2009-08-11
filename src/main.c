@@ -36,10 +36,10 @@
 /*===========================================================================*/
 
 int  main (int argc, char * argv[]);
-void on_win_main_destroy (GtkObject *, gpointer);
-void on_wdw_connect_destroy (GtkObject *, gpointer);
-void on_btn_cancelconnection_clicked (GtkObject *, gpointer);
-void on_btn_connect_clicked (GtkObject *, gpointer);
+static void on_win_main_destroy (GtkObject *, gpointer);
+static void on_wdw_connect_destroy (GtkObject *, gpointer);
+static void on_btn_cancelconnection_clicked (GtkObject *, gpointer);
+static void on_btn_connect_clicked (GtkObject *, gpointer);
 static void notice_error (GError *);
 
 static struct Toplevel {
@@ -86,7 +86,7 @@ main (int argc, char * argv[])
  * @param object The GtkObject we'll need to dismember.
  * @param user_data Data passed in; this function expects none
  */
-void 
+static void 
 on_win_main_destroy (GtkObject *object, gpointer user_data)
 {
 	gtk_main_quit ();
@@ -99,7 +99,7 @@ on_win_main_destroy (GtkObject *object, gpointer user_data)
  * @param object The GtkObject we'll need to dismember.
  * @param user_data Data passed in; this function expects none
  */
-void 
+static void 
 on_helpmenu_about_activate (GtkWidget *widget, gpointer user_data)
 {
 	GtkWidget  *wdw_about;
@@ -115,7 +115,7 @@ on_helpmenu_about_activate (GtkWidget *widget, gpointer user_data)
  * @param object A GtkObject
  * @param user_data Data passed in
  */
-void 
+static void 
 on_btn_cancelconnection_clicked (GtkObject *widget, gpointer user_data)
 {
 	gtk_main_quit ();
@@ -127,11 +127,11 @@ on_btn_cancelconnection_clicked (GtkObject *widget, gpointer user_data)
  * @param object A GtkObject
  * @param user_data Data passed in
  */
-void 
+static void 
 on_btn_connect_clicked (GtkObject *object, gpointer user_data)
 
 {
-	printf ("%s\n", "on_btn_connect_clicked: Not Implemented");
+	g_print ("on_btn_connect_clicked: Not Implemented\n");
 	return;
 }
 

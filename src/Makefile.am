@@ -20,10 +20,24 @@
 #=============================================================================
 
 brokedir=../
-broke_PROGRAMS=broke
-broke_SOURCES=broke.c common.h
-broke_LDFLAGS = -export-dynamic
 
-INCLUDES = @GTK_CFLAGS@ @LIBGDA_CFLAGS@ @LIBGNOMEDB_CFLAGS@
-broke_LDADD = @GTK_LIBS@ @LIBGDA_LIBS@ @LIBGNOMEDB_LIBS@
+broke_PROGRAMS=\
+	broke
+
+broke_SOURCES=\
+	main.c \
+	common.h
+
+broke_LDFLAGS =\
+	-export-dynamic
+
+INCLUDES =\
+	@GTK_CFLAGS@ \
+	@LIBGDA_CFLAGS@ \
+	@LIBGNOMEDB_CFLAGS@
+
+broke_LDADD =\
+	@GTK_LIBS@ \
+	@LIBGDA_LIBS@ \
+	@LIBGNOMEDB_LIBS@
 
