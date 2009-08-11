@@ -56,6 +56,5 @@ typedef struct BrokeUIAbout {
 } BrokeUIAbout;
 
 BrokeUI *broke_ui_get   (BrokeUIWindow);
-void     broke_ui_unref (BrokeUI *);
  
 #endif

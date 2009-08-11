@@ -48,22 +48,16 @@ BrokeUI *build_window_main  (GtkBuilder *builder);
 BrokeUI *build_window_about (GtkBuilder *builder);
 BrokeUI *broke_ui_new   (BrokeUIWindow type);
 BrokeUI *broke_ui_get   (BrokeUIWindow type);
-void     broke_ui_unref (BrokeUI *window);
-
-/**
- * @brief Defines a record of a broke window
- */
-typedef struct {
-	BrokeUI *ui;
-	int      references;
-} broke_ui_record; 
+void     broke_ui_unref (BrokeUIWindow type);
+void     on_window_destroy_main  (GtkObject *object, gpointer user_data);
+void     on_window_destroy_about (GtkObject *object, gpointer user_data);
 
 /**
  * @brief An array of broke_window_records tracking each window.
  */
-static broke_ui_record broke_window[] = {
-	{NULL, 0},
-	{NULL, 0}
+static BrokeUI *broke_window[] = {
+	NULL,
+	NULL
 };
 
 /* Functions line up with BrokeUI indexes */
@@ -127,7 +121,7 @@ BrokeUI *broke_ui_new (BrokeUIWindow type)
 	BrokeUI *window;
 	GtkBuilder *builder;
 
-	if (broke_window[type].ui != NULL) {
+	if (broke_window[type] != NULL) {
 		g_printerr ("broke_ui_new: *** Window is already instantiated!\n");
 		return NULL;
 	}
@@ -151,13 +145,11 @@ BrokeUI *broke_ui_get (BrokeUIWindow type)
 {
 	BrokeUI *window = NULL;
 
-	if (broke_window[type].ui != NULL) {
-		window = broke_window[type].ui;
-		++broke_window[type].references;
+	if (broke_window[type] != NULL) {
+		window = broke_window[type];
 	} else {
 		window = broke_ui_new (type);
-		broke_window[type].ui = window;
-		++broke_window[type].references;
+		broke_window[type] = window;
 	}
 		
 	return window;
@@ -168,23 +160,31 @@ BrokeUI *broke_ui_get (BrokeUIWindow type)
  *         When the reference count reaches zero, the struct will be freed.
  * @param  window The window which (it is signaled) is no longer referenced.
  */
-void broke_ui_unref (BrokeUI *window)
+void broke_ui_unref (BrokeUIWindow type)
 {
-	BrokeUIWindow type = window->type;
-
-	if (window != broke_window[type].ui) {
-		g_printerr ("broke_ui_unref: *** window is not a Broke window!\n");
-		return;
-	}
-	
-	--broke_window[type].references;	
-
-	if (broke_window[type].references <= 0) {
-		free (broke_window[type].ui);
-		broke_window[type].ui = NULL;
-		broke_window[type].references = 0;
-	}
-			
+	free (broke_window[type]);
+	broke_window[type] = NULL;
 	return;
 }
 
+/**
+ * @brief  Unreferences the now deleting main window.
+ *         This function should be the handler for the destroy event of the 
+ *         main Broke window.
+ */
+void on_window_destroy_main (GtkObject *object, gpointer user_data)
+{
+	broke_ui_unref (BROKE_WINDOW_MAIN);
+	return;
+}
+
+/**
+ * @brief  Unreferences the now deleting about window.
+ *         This function should be the handler for the destroy event of the
+ *         Broke About window.
+ */
+void on_window_destroy_about (GtkObject *object, gpointer user_data)
+{
+	broke_ui_unref (BROKE_WINDOW_ABOUT);
+	return;
+}

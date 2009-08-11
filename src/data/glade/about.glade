@@ -689,8 +689,9 @@ the library.  If this is what you want to do, use the GNU Lesser General
 Public License instead of this License.  But first, please read
 &lt;http://www.gnu.org/philosophy/why-not-lgpl.html&gt;.</property>
     <property name="authors">Reid Vandewiele &lt;reidmv@pdx.edu&gt;</property>
-    <signal name="response" handler="gtk_widget_hide"/>
-    <signal name="delete_event" handler="gtk_widget_hide_on_delete"/>
+    <signal name="destroy" handler="on_window_destroy_about"/>
+    <signal name="destroy_event" handler="on_window_destroy_about"/>
+    <signal name="response" handler="gtk_widget_destroy"/>
     <child internal-child="vbox">
       <object class="GtkVBox" id="dialog-vbox3">
         <property name="visible">True</property>
