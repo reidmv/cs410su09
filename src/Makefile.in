@@ -100,6 +100,8 @@ ECHO_N = @ECHO_N@
 ECHO_T = @ECHO_T@
 EGREP = @EGREP@
 EXEEXT = @EXEEXT@
+GLIB_CFLAGS = @GLIB_CFLAGS@
+GLIB_LIBS = @GLIB_LIBS@
 GREP = @GREP@
 GTK_CFLAGS = @GTK_CFLAGS@
 GTK_LIBS = @GTK_LIBS@
@@ -175,23 +177,23 @@ top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 brokedir = ../
 broke_SOURCES = \
-	main.c \
-	broke_ui.c \
-	common.h \
-	broke_ui.h
+  main.c \
+  broke_ui.c \
+  common.h \
+  broke_ui.h
 
 broke_LDFLAGS = \
-	-export-dynamic
+  -export-dynamic
 
 INCLUDES = \
-	@GTK_CFLAGS@ \
-	@LIBGDA_CFLAGS@ \
-	@LIBGNOMEDB_CFLAGS@
+  @GTK_CFLAGS@ \
+  @LIBGDA_CFLAGS@ \
+  @LIBGNOMEDB_CFLAGS@
 
 broke_LDADD = \
-	@GTK_LIBS@ \
-	@LIBGDA_LIBS@ \
-	@LIBGNOMEDB_LIBS@
+  @GTK_LIBS@ \
+  @LIBGDA_LIBS@ \
+  @LIBGNOMEDB_LIBS@
 
 all: all-am
 

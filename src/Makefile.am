@@ -22,24 +22,24 @@
 brokedir=../
 
 broke_PROGRAMS=\
-	broke
+  broke
 
 broke_SOURCES=\
-	main.c \
-	broke_ui.c \
-	common.h \
-	broke_ui.h
+  main.c \
+  broke_ui.c \
+  common.h \
+  broke_ui.h
 
 broke_LDFLAGS=\
-	-export-dynamic
+  -export-dynamic
 
-INCLUDES=\
-	@GTK_CFLAGS@ \
-	@LIBGDA_CFLAGS@ \
-	@LIBGNOMEDB_CFLAGS@
+INCLUDES= \
+  @GTK_CFLAGS@ \
+  @LIBGDA_CFLAGS@ \
+  @LIBGNOMEDB_CFLAGS@
 
 broke_LDADD=\
-	@GTK_LIBS@ \
-	@LIBGDA_LIBS@ \
-	@LIBGNOMEDB_LIBS@
+  @GTK_LIBS@ \
+  @LIBGDA_LIBS@ \
+  @LIBGNOMEDB_LIBS@
 
