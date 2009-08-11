@@ -28,10 +28,12 @@
 *.swp
 *.o
 Makefile
+Makefile.in
 !/db_scripts/Makefile
 /autom4te.cache
 /schemaspy
 /config.*
 /stamp-h1
+/configure
 /src/.deps/
 /src/broke
