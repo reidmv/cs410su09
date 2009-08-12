@@ -27,8 +27,12 @@ broke_PROGRAMS=\
 broke_SOURCES=\
 	broke.c \
 	broke_ui.c \
-	common.h \
-	broke_ui.h
+	connection.c \
+	main.c \
+	broke_ui.h \
+	connection.h \
+	main.h \
+	common.h
 
 broke_LDFLAGS=\
 	-export-dynamic

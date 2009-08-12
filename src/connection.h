@@ -23,12 +23,17 @@
  * @file   connection.h
  * @author Reid Vandewiele
  *
- *   Description
+ *   Defines a means for windows to interact with an established connection
+ * to a datasource.
  */
 
 #ifndef __CONNECTION_H__
 #define __CONNECTION_H__
 
-#define SBAR_MAXLEN     48
+#include <libgda/libgda.h>
+#include <libgnomedb/libgnomedb.h>
+
+GdaConnection *open_connection_gnomedblogin (GnomeDbLogin *login);
+GdaConnection *get_current_connection       (void);
 
 #endif

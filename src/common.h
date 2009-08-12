@@ -32,5 +32,6 @@
 
 #define BROKE             "Broke"
 #define VERSION           "0.1"
+#define SBAR_MAXLEN       56
 
 #endif

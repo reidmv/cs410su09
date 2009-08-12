@@ -30,6 +30,8 @@
 #ifndef __BROKE_UI_H__
 #define __BROKE_UI_H__
 
+#include <libgnomedb/libgnomedb.h>
+
 #define BROKE_UI_MAIN  (BrokeUIMain  *) (broke_ui_get (BROKE_WINDOW_MAIN))
 #define BROKE_UI_ABOUT (BrokeUIAbout *) (broke_ui_get (BROKE_WINDOW_ABOUT))
 

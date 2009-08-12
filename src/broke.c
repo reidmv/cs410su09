@@ -35,7 +35,6 @@
 #include "connection.h"
 #include "common.h"
 
-#define  SBAR_CONTEXT_CONNECTING "statusbar_context_main_connecting"
 
 /*===========================================================================*/
 /*                            Function Prototypes                            */
@@ -48,7 +47,6 @@ void on_btn_cancelconnection_clicked (GtkObject *, gpointer);
 void on_btn_connect_clicked (GtkObject *, gpointer);
 static void notice_error (GError *);
 
-GdaDict *db_dict;
 
 /**
  * @brief The entry point for the program.
@@ -77,63 +75,12 @@ main (int argc, char * argv[])
 }
 
 /**
- * @brief Fire up the connection to the selected datasource.
- * @param login A GnomeDbLogin widget from which to obtain login credentials
- */
-static GdaConnection *
-open_connection (GnomeDbLogin *login) 
-{
-	GdaClient     *client;
-	GdaConnection *connection;
-	BrokeUIMain   *main_window;
-	GtkStatusbar  *sbar;
-	const gchar   *dsn;
-	const gchar   *username;
-	const gchar   *password;
-	gchar          sbar_text[SBAR_MAXLEN + 1];
-	guint          context;
-	GError        *error = NULL;
-
-	main_window = BROKE_UI_MAIN;
-	sbar        = main_window->statusbar;
-	context     = gtk_statusbar_get_context_id (sbar, SBAR_CONTEXT_CONNECTING);
-	dsn         = gnome_db_login_get_dsn (login);
-	username    = gnome_db_login_get_username (login);
-	password    = gnome_db_login_get_password (login);
-
-	g_snprintf (sbar_text, SBAR_MAXLEN, "Connecting to %s...", dsn);
-	gtk_statusbar_pop (sbar, context);
-	gtk_statusbar_push (sbar, context, sbar_text);
-
-	client = gda_client_new ();
-	connection = gda_client_open_connection (client,
-	                                         dsn,
-	                                         username,
-	                                         password,
-                                           GDA_CONNECTION_OPTIONS_NONE,
-	                                         &error);
-	
-	if (! connection) {
-		g_snprintf (sbar_text, SBAR_MAXLEN, "Failed to connect to %s", dsn);
-		g_print ("Failed to connect to %s\n", dsn);
-	} else {
-		g_snprintf (sbar_text, SBAR_MAXLEN, "Connected to %s", dsn);
-		g_print ("Connected to %s\n", dsn);
-	}
-
-	gtk_statusbar_pop (sbar, context);
-	gtk_statusbar_push (sbar, context, sbar_text);
-
-	return connection;
-}
-
-/**
  * @brief Run upon application quit.
  * @param object The GtkObject we'll need to dismember.
  * @param user_data Data passed in; this function expects none
  */
 void 
-on_win_main_destroy (GtkObject *object, gpointer user_data)
+terminate_broke (GtkObject *object, gpointer user_data)
 {
 	gtk_main_quit ();
 	return;
@@ -182,7 +129,7 @@ on_btn_connect_clicked (GtkObject *object, gpointer user_data)
 	main_window = BROKE_UI_MAIN;
 	login = main_window->login;
 
-	open_connection (login);
+	open_connection_gnomedblogin (login);
 
 	return;
 }

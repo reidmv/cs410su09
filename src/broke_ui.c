@@ -52,9 +52,7 @@ void     broke_ui_unref (BrokeUIWindow type);
 void     on_window_destroy_main  (GtkObject *object, gpointer user_data);
 void     on_window_destroy_about (GtkObject *object, gpointer user_data);
 
-/**
- * @brief An array of broke_window_records tracking each window.
- */
+/* An array of broke_window_records tracking each window. */
 static BrokeUI *broke_window[] = {
 	NULL,
 	NULL
