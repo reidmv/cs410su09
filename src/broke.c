@@ -39,22 +39,16 @@
 /*===========================================================================*/
 /*                            Function Prototypes                            */
 /*===========================================================================*/
-
 int  main (int argc, char * argv[]);
-void on_win_main_destroy (GtkObject *, gpointer);
-void on_wdw_connect_destroy (GtkObject *, gpointer);
-void on_btn_cancelconnection_clicked (GtkObject *, gpointer);
-void on_btn_connect_clicked (GtkObject *, gpointer);
-static void notice_error (GError *);
-
+void terminate_broke (GtkObject *, gpointer);
+void notice_error (GError *);
 
 /**
  * @brief The entry point for the program.
  * @param argc The number of arguments given.
  * @param argv The arguments vector.
  */
-int
-main (int argc, char * argv[])
+int main (int argc, char * argv[])
 {
 	BrokeUIMain  *main_window;
 	GnomeDbLogin *login;
@@ -65,8 +59,6 @@ main (int argc, char * argv[])
 
 	main_window = BROKE_UI_MAIN;
 	login = main_window->login;
-
-	gnome_db_login_set_enable_create_button (login, TRUE);
 
 	gtk_window_present (main_window->window);
 	gtk_main ();
@@ -79,57 +71,9 @@ main (int argc, char * argv[])
  * @param object The GtkObject we'll need to dismember.
  * @param user_data Data passed in; this function expects none
  */
-void 
-terminate_broke (GtkObject *object, gpointer user_data)
+void terminate_broke (GtkObject *widget, gpointer user_data)
 {
 	gtk_main_quit ();
-	return;
-}
-
-/**
- * @brief Runs when the About option is chosen from the Help menu of the main
- *        window.
- * @param object The GtkObject we'll need to dismember.
- * @param user_data Data passed in; this function expects none
- */
-void 
-on_helpmenu_about_activate (GtkWidget *widget, gpointer user_data)
-{
-	BrokeUIAbout *about_window;
-
-	about_window = BROKE_UI_ABOUT;
-	gtk_window_present (GTK_WINDOW (about_window->window));
-
-	return;
-}
-
-/**
- * @brief Called when a user clicks "Cancel" in win_main->tab_connect
- * @param object A GtkObject
- * @param user_data Data passed in
- */
-void 
-on_btn_cancelconnection_clicked (GtkObject *widget, gpointer user_data)
-{
-	gtk_main_quit ();
-	return;
-}
-
-/**
- * @brief Called when a user clicks "Connect" in wdw_connect.
- * @param object A GtkObject
- * @param user_data Data passed in
- */
-void 
-on_btn_connect_clicked (GtkObject *object, gpointer user_data)
-{
-	BrokeUIMain  *main_window;
-	GnomeDbLogin *login;
-
-	main_window = BROKE_UI_MAIN;
-	login = main_window->login;
-
-	open_connection_gnomedblogin (login);
 
 	return;
 }
@@ -138,8 +82,7 @@ on_btn_connect_clicked (GtkObject *object, gpointer user_data)
  * @brief Generic error printing function
  * @param error The error message
  */
-static void
-notice_error (GError *error)
+void notice_error (GError *error)
 { 
   g_error ("Error: %s\n", error && error->message ? error->message : "No detail");
 }

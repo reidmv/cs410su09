@@ -34,4 +34,7 @@
 #define VERSION           "0.1"
 #define SBAR_MAXLEN       56
 
+/* Generic error printing function */
+void notice_error (GError *error);
+
 #endif

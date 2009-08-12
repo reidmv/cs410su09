@@ -23,13 +23,61 @@
  * @file   main.c
  * @author Reid Vandewiele
  *
- *   Description
+ *   Contains functions related to the management of the main Broke window.
  */
 
 #include <gtk/gtk.h>
 #include <libgda/libgda.h>
+#include "common.h"
+#include "broke_ui.h"
 #include "main.h"
 
 /*===========================================================================*/
 /*                            Function Prototypes                            */
 /*===========================================================================*/
+void on_helpmenu_about (GtkWidget *widget, gpointer user_data);
+void on_btn_cancelconnection (GtkObject *widget, gpointer user_data);
+void on_btn_connect (GtkObject *object, gpointer user_data);
+
+/**
+ * @brief Runs when the About option is chosen from the Help menu of the main
+ *        window.
+ * @param object The GtkObject we'll need to dismember.
+ * @param user_data Data passed in; this function expects none
+ */
+void main_menu_about (GtkWidget *widget, gpointer user_data)
+{
+	BrokeUIAbout *about_window;
+
+	about_window = BROKE_UI_ABOUT;
+	gtk_window_present (GTK_WINDOW (about_window->window));
+
+	return;
+}
+
+/**
+ * @brief Called when a user clicks "Cancel" in win_main->tab_connect
+ * @param object A GtkObject
+ * @param user_data Data passed in
+ */
+void main_connection_cancel (GtkObject *widget, gpointer user_data)
+{
+	return;
+}
+
+/**
+ * @brief Called when a user clicks "Connect" in wdw_connect.
+ * @param object A GtkObject
+ * @param user_data Data passed in
+ */
+void main_connection_connect (GtkObject *object, gpointer user_data)
+{
+	BrokeUIMain  *main_window;
+	GnomeDbLogin *login;
+
+	main_window = BROKE_UI_MAIN;
+	login = main_window->login;
+	open_connection_gnomedblogin (login);
+
+	return;
+}

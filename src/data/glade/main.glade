@@ -7,7 +7,7 @@
     <property name="title" translatable="yes">Broke</property>
     <property name="default_width">350</property>
     <property name="default_height">700</property>
-    <signal name="destroy" handler="on_win_main_destroy"/>
+    <signal name="destroy" handler="terminate_broke"/>
     <child>
       <object class="GtkVBox" id="vbox1">
         <property name="visible">True</property>
@@ -137,7 +137,7 @@
                         <property name="visible">True</property>
                         <property name="use_underline">True</property>
                         <property name="use_stock">True</property>
-                        <signal name="activate" handler="on_helpmenu_about_activate"/>
+                        <signal name="activate" handler="main_menu_about"/>
                       </object>
                     </child>
                   </object>
@@ -215,7 +215,7 @@
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
                             <property name="receives_default">True</property>
-                            <signal name="clicked" handler="on_btn_connect_clicked"/>
+                            <signal name="clicked" handler="main_connection_connect"/>
                           </object>
                           <packing>
                             <property name="expand">False</property>
@@ -229,7 +229,7 @@
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
                             <property name="receives_default">True</property>
-                            <signal name="clicked" handler="on_btn_cancelconnection_clicked"/>
+                            <signal name="clicked" handler="main_connection_cancel"/>
                           </object>
                           <packing>
                             <property name="expand">False</property>

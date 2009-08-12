@@ -23,7 +23,7 @@
  * @file   main.h
  * @author Reid Vandewiele
  *
- *   Description
+ *   Contains functions related to the management of the main Broke window.
  */
 
 #ifndef __MAIN_H__

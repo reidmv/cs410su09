@@ -83,6 +83,8 @@ BrokeUI *build_window_main (GtkBuilder *builder)
 	login     = (GnomeDbLogin *) gtk_builder_get_object (builder, MAIN_LOGIN);
 	statusbar = (GtkStatusbar *) gtk_builder_get_object (builder, MAIN_STATUSBAR);
 
+	gnome_db_login_set_enable_create_button (login, TRUE);
+
 	broke_window_main = (BrokeUIMain *) malloc (sizeof (BrokeUIMain));
 	broke_window_main->type      = BROKE_WINDOW_MAIN;
 	broke_window_main->window    = window;
