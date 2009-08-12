@@ -160,7 +160,14 @@ on_btn_cancelconnection_clicked (GtkObject *widget, gpointer user_data)
 void 
 on_btn_connect_clicked (GtkObject *object, gpointer user_data)
 {
-	g_printerr ("on_btn_connect_clicked: Not Yet Implemented.\n");
+	BrokeUIMain  *main;
+	GnomeDbLogin *login;
+
+	main = BROKE_UI_MAIN (broke_ui_get (BROKE_WINDOW_MAIN));
+	login = main->login;
+
+	open_connection (login);
+
 	return;
 }
 
