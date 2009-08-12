@@ -29,15 +29,15 @@
 
 #include <gtk/gtk.h>
 #include <libgnomedb/libgnomedb.h>
-#include <libgnomedb/gnome-db-util.h>
 #include <malloc.h>
 #include "broke_ui.h"
 
 #define GLADE_MAIN   "data/glade/main.glade"
 #define GLADE_ABOUT  "data/glade/about.glade"
 
-#define MAIN_WINDOW  "window"
-#define MAIN_LOGIN   "login"
+#define MAIN_WINDOW    "window"
+#define MAIN_LOGIN     "login"
+#define MAIN_STATUSBAR "statusbar"
 
 #define ABOUT_WINDOW "window"
 
@@ -75,20 +75,23 @@ static BrokeUIBuilder build_broke_window[] = {
 BrokeUI *build_window_main (GtkBuilder *builder)
 {
 	BrokeUIMain *broke_window_main;
-	GtkWidget       *window;
-	GtkWidget       *login;
+	GtkWindow       *window;
+	GnomeDbLogin    *login;
+	GtkStatusbar    *statusbar;
 
 	gtk_builder_add_from_file (builder, GLADE_MAIN, NULL);
 
-	window = GTK_WIDGET (gtk_builder_get_object (builder, MAIN_WINDOW));
-	login  = GTK_WIDGET (gtk_builder_get_object (builder, MAIN_LOGIN));
+	window    = GTK_WIDGET (gtk_builder_get_object (builder, MAIN_WINDOW));
+	login     = GTK_WIDGET (gtk_builder_get_object (builder, MAIN_LOGIN));
+	statusbar = GTK_WIDGET (gtk_builder_get_object (builder, MAIN_STATUSBAR));
 
-	broke_window_main = BROKE_UI_MAIN (malloc (sizeof (BrokeUIMain)));
-	broke_window_main->type   = BROKE_WINDOW_MAIN;
-	broke_window_main->window = window;
-	broke_window_main->login  = login;
+	broke_window_main = (BrokeUIMain *) malloc (sizeof (BrokeUIMain));
+	broke_window_main->type      = BROKE_WINDOW_MAIN;
+	broke_window_main->window    = window;
+	broke_window_main->login     = login;
+	broke_window_main->statusbar = statusbar;
 
-	return BROKE_UI (broke_window_main);
+	return (BrokeUI *) broke_window_main;
 }
 
 /**
@@ -105,11 +108,11 @@ BrokeUI *build_window_about (GtkBuilder *builder)
 
 	window = GTK_WIDGET (gtk_builder_get_object (builder, ABOUT_WINDOW));
 
-	broke_window_about = BROKE_UI_ABOUT (malloc (sizeof (BrokeUIAbout)));
+	broke_window_about = (BrokeUIAbout *) malloc (sizeof (BrokeUIAbout));
 	broke_window_about->type   = BROKE_WINDOW_ABOUT;
 	broke_window_about->window = window;
 
-	return BROKE_UI (broke_window_about);
+	return (BrokeUI *) broke_window_about;
 }
 
 /**

@@ -30,9 +30,8 @@
 #ifndef __BROKE_UI_H__
 #define __BROKE_UI_H__
 
-#define BROKE_UI(var)       ((BrokeUI      *) var)
-#define BROKE_UI_MAIN(var)  ((BrokeUIMain  *) var)
-#define BROKE_UI_ABOUT(var) ((BrokeUIAbout *) var)
+#define BROKE_UI_MAIN  (BrokeUIMain  *) (broke_ui_get (BROKE_WINDOW_MAIN))
+#define BROKE_UI_ABOUT (BrokeUIAbout *) (broke_ui_get (BROKE_WINDOW_ABOUT))
 
 typedef enum {
 	BROKE_WINDOW_MAIN,
@@ -41,13 +40,14 @@ typedef enum {
 
 typedef struct BrokeUI {
 	BrokeUIWindow type;
-	GtkWidget *window;
+	GtkWindow    *window;
 } BrokeUI;
 
 typedef struct BrokeUIMain {
 	BrokeUIWindow type;
-	GtkWidget *window;
-	GtkWidget *login;
+	GtkWindow    *window;
+	GnomeDbLogin *login;
+	GtkStatusbar *statusbar;
 } BrokeUIMain;
 
 typedef struct BrokeUIAbout {
