@@ -32,6 +32,7 @@
 #include <libgnomedb/libgnomedb.h>
 #include <libgnomedb/gnome-db-util.h>
 #include "broke_ui.h"
+#include "connection.h"
 #include "common.h"
 
 /*===========================================================================*/
@@ -55,19 +56,19 @@ GdaDict *db_dict;
 int
 main (int argc, char * argv[])
 {
-	BrokeUIMain *main_window;
-	GtkWidget   *login;
+	BrokeUIMain  *main_window;
+	GnomeDbLogin *login;
 
 	/* libgda, GTK+ initialization */
 	gtk_init (&argc, &argv);
 	gda_init(BROKE, VERSION, argc, argv);
 
-	main_window = BROKE_UI_MAIN (broke_ui_get (BROKE_WINDOW_MAIN));
+	main_window = BROKE_UI_MAIN;
 	login = main_window->login;
 
 	gnome_db_login_set_enable_create_button ((GnomeDbLogin *) login, TRUE);
 
-	gtk_widget_show (main_window->window);       
+	gtk_window_present (main_window->window);
 	gtk_main ();
 
 	return 0;
@@ -82,19 +83,24 @@ open_connection (GnomeDbLogin *login)
 {
 	GdaClient     *client;
 	GdaConnection *connection;
-	const gchar         *dsn;
-	const gchar         *username;
-	const gchar         *password;
+	BrokeUIMain   *main_window;
+	GtkStatusbar  *sbar;
+	const gchar   *dsn;
+	const gchar   *username;
+	const gchar   *password;
+	gchar          sbar_text[SBAR_MAXLEN + 1];
+	guint          context;
 	GError        *error = NULL;
 
-	dsn = gnome_db_login_get_dsn (login);
-	username = gnome_db_login_get_username (login);
-	password = gnome_db_login_get_password (login);
+	main_window = BROKE_UI_MAIN;
+	sbar        = main_window->statusbar;
+	context     = gtk_statusbar_get_context_id (sbar, SBAR_CONTEXT_CONNECTING);
+	dsn         = gnome_db_login_get_dsn (login);
+	username    = gnome_db_login_get_username (login);
+	password    = gnome_db_login_get_password (login);
 
-	/*
-	list_providers ();
-	list_datasources ();
-	*/
+	g_snprintf (sbar_text, SBAR_MAXLEN, "Connecting to %s...", dsn);
+	gtk_statusbar_push (sbar, context, sbar_text);
 
 	client = gda_client_new ();
 	connection = gda_client_open_connection (client,
@@ -105,7 +111,12 @@ open_connection (GnomeDbLogin *login)
 	                                         &error);
 	
 	if (! connection) {
+		g_snprintf (sbar_text, SBAR_MAXLEN, "Failed to connect to %s\n", dsn);
+		gtk_statusbar_pop (sbar, context);
+		gtk_statusbar_push (sbar, context, sbar_text);
 		g_print ("Failed to connect to %s\n", dsn);
+	} else {
+		g_print ("Connected to %s\n", dsn);
 	}
 
 	return connection;
@@ -134,7 +145,7 @@ on_helpmenu_about_activate (GtkWidget *widget, gpointer user_data)
 {
 	BrokeUIAbout *about_window;
 
-	about_window = BROKE_UI_ABOUT (broke_ui_get (BROKE_WINDOW_ABOUT));
+	about_window = BROKE_UI_ABOUT;
 	gtk_window_present (GTK_WINDOW (about_window->window));
 
 	return;
@@ -160,11 +171,11 @@ on_btn_cancelconnection_clicked (GtkObject *widget, gpointer user_data)
 void 
 on_btn_connect_clicked (GtkObject *object, gpointer user_data)
 {
-	BrokeUIMain  *main;
+	BrokeUIMain  *main_window;
 	GnomeDbLogin *login;
 
-	main = BROKE_UI_MAIN (broke_ui_get (BROKE_WINDOW_MAIN));
-	login = main->login;
+	main_window = BROKE_UI_MAIN;
+	login = main_window->login;
 
 	open_connection (login);
 

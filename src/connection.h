@@ -29,5 +29,12 @@
 #ifndef __CONNECTION_H__
 #define __CONNECTION_H__
 
+#define SBAR_MAXLEN     48
+
+#define SBAR_CONTEXT_CONNECTING "broke_connection_connecting"
+
+#define SBAR_CONN_ERROR      "broke_connection_error"
+#define SBAR_CONN_SUCCESS    "broke_connection_success"
+
  
 #endif
