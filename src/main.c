@@ -66,7 +66,7 @@ main (int argc, char * argv[])
 	main_window = BROKE_UI_MAIN;
 	login = main_window->login;
 
-	gnome_db_login_set_enable_create_button ((GnomeDbLogin *) login, TRUE);
+	gnome_db_login_set_enable_create_button (login, TRUE);
 
 	gtk_window_present (main_window->window);
 	gtk_main ();
@@ -100,6 +100,7 @@ open_connection (GnomeDbLogin *login)
 	password    = gnome_db_login_get_password (login);
 
 	g_snprintf (sbar_text, SBAR_MAXLEN, "Connecting to %s...", dsn);
+	gtk_statusbar_pop (sbar, context);
 	gtk_statusbar_push (sbar, context, sbar_text);
 
 	client = gda_client_new ();
@@ -111,13 +112,15 @@ open_connection (GnomeDbLogin *login)
 	                                         &error);
 	
 	if (! connection) {
-		g_snprintf (sbar_text, SBAR_MAXLEN, "Failed to connect to %s\n", dsn);
-		gtk_statusbar_pop (sbar, context);
-		gtk_statusbar_push (sbar, context, sbar_text);
+		g_snprintf (sbar_text, SBAR_MAXLEN, "Failed to connect to %s", dsn);
 		g_print ("Failed to connect to %s\n", dsn);
 	} else {
+		g_snprintf (sbar_text, SBAR_MAXLEN, "Connected to %s", dsn);
 		g_print ("Connected to %s\n", dsn);
 	}
+
+	gtk_statusbar_pop (sbar, context);
+	gtk_statusbar_push (sbar, context, sbar_text);
 
 	return connection;
 }
