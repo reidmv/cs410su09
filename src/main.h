@@ -20,16 +20,13 @@
 /*==========================================================================*/
 
 /**
- * @file   main.c
+ * @file   main.h
  * @author Reid Vandewiele
  *
  *   Description
  */
 
-#include <gtk/gtk.h>
-#include <libgda/libgda.h>
-#include "main.h"
+#ifndef __MAIN_H__
+#define __MAIN_H__
 
-/*===========================================================================*/
-/*                            Function Prototypes                            */
-/*===========================================================================*/
+#endif

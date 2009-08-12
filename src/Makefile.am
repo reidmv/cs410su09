@@ -25,7 +25,7 @@ broke_PROGRAMS=\
 	broke
 
 broke_SOURCES=\
-	main.c \
+	broke.c \
 	broke_ui.c \
 	common.h \
 	broke_ui.h

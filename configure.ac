@@ -3,7 +3,7 @@
 
 AC_PREREQ([2.60])
 AC_INIT([Broke], [0.1], [reidmv@pdx.edu])
-AC_CONFIG_SRCDIR([src/main.c])
+AC_CONFIG_SRCDIR([src/broke.c])
 AM_INIT_AUTOMAKE
 AM_CONFIG_HEADER([config.h])
 
