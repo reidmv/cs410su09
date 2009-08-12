@@ -81,9 +81,9 @@ BrokeUI *build_window_main (GtkBuilder *builder)
 
 	gtk_builder_add_from_file (builder, GLADE_MAIN, NULL);
 
-	window    = GTK_WIDGET (gtk_builder_get_object (builder, MAIN_WINDOW));
-	login     = GTK_WIDGET (gtk_builder_get_object (builder, MAIN_LOGIN));
-	statusbar = GTK_WIDGET (gtk_builder_get_object (builder, MAIN_STATUSBAR));
+	window    = (GtkWindow    *) gtk_builder_get_object (builder, MAIN_WINDOW);
+	login     = (GnomeDbLogin *) gtk_builder_get_object (builder, MAIN_LOGIN);
+	statusbar = (GtkStatusbar *) gtk_builder_get_object (builder, MAIN_STATUSBAR);
 
 	broke_window_main = (BrokeUIMain *) malloc (sizeof (BrokeUIMain));
 	broke_window_main->type      = BROKE_WINDOW_MAIN;
@@ -102,11 +102,11 @@ BrokeUI *build_window_main (GtkBuilder *builder)
 BrokeUI *build_window_about (GtkBuilder *builder)
 {
 	BrokeUIAbout *broke_window_about;
-	GtkWidget    *window;
+	GtkWindow    *window;
 
 	gtk_builder_add_from_file (builder, GLADE_ABOUT, NULL);
 
-	window = GTK_WIDGET (gtk_builder_get_object (builder, ABOUT_WINDOW));
+	window = (GtkWindow *) gtk_builder_get_object (builder, ABOUT_WINDOW);
 
 	broke_window_about = (BrokeUIAbout *) malloc (sizeof (BrokeUIAbout));
 	broke_window_about->type   = BROKE_WINDOW_ABOUT;

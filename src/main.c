@@ -35,6 +35,8 @@
 #include "connection.h"
 #include "common.h"
 
+#define  SBAR_CONTEXT_CONNECTING "statusbar_context_main_connecting"
+
 /*===========================================================================*/
 /*                            Function Prototypes                            */
 /*===========================================================================*/

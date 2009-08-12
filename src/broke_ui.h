@@ -52,7 +52,7 @@ typedef struct BrokeUIMain {
 
 typedef struct BrokeUIAbout {
 	BrokeUIWindow type;
-	GtkWidget *window;
+	GtkWindow *window;
 } BrokeUIAbout;
 
 BrokeUI *broke_ui_get   (BrokeUIWindow);
