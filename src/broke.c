@@ -73,6 +73,12 @@ int main (int argc, char * argv[])
  */
 void terminate_broke (GtkObject *widget, gpointer user_data)
 {
+	BrokeUIMain *main_window;
+
+	main_window = BROKE_UI_MAIN;
+	gtk_widget_hide (GTK_WIDGET (main_window->window));
+	
+	broke_connection_close ();
 	gtk_main_quit ();
 
 	return;

@@ -30,14 +30,15 @@
 #include <libgda/libgda.h>
 #include "common.h"
 #include "broke_ui.h"
+#include "connection.h"
 #include "main.h"
 
 /*===========================================================================*/
 /*                            Function Prototypes                            */
 /*===========================================================================*/
-void on_helpmenu_about (GtkWidget *widget, gpointer user_data);
-void on_btn_cancelconnection (GtkObject *widget, gpointer user_data);
-void on_btn_connect (GtkObject *object, gpointer user_data);
+void main_menu_about (GtkWidget *widget, gpointer user_data);
+void main_connection_connect (GtkObject *object, gpointer user_data);
+void main_ui_disconnect (GtkObject *object, gpointer user_data);
 
 /**
  * @brief Runs when the About option is chosen from the Help menu of the main
@@ -56,28 +57,44 @@ void main_menu_about (GtkWidget *widget, gpointer user_data)
 }
 
 /**
- * @brief Called when a user clicks "Cancel" in win_main->tab_connect
- * @param object A GtkObject
- * @param user_data Data passed in
- */
-void main_connection_cancel (GtkObject *widget, gpointer user_data)
-{
-	return;
-}
-
-/**
  * @brief Called when a user clicks "Connect" in wdw_connect.
  * @param object A GtkObject
  * @param user_data Data passed in
  */
 void main_connection_connect (GtkObject *object, gpointer user_data)
 {
-	BrokeUIMain  *main_window;
-	GnomeDbLogin *login;
+	BrokeUIMain   *main_window;
+	GnomeDbLogin  *login;
+	GtkNotebook   *notebook;
+	GdaConnection *connection;
 
 	main_window = BROKE_UI_MAIN;
 	login = main_window->login;
-	open_connection_gnomedblogin (login);
+	notebook = main_window->notebook;
+	connection = broke_connection_gnomedblogin (login);
+	
+	if (connection != NULL) {
+		gtk_notebook_set_current_page (notebook, MAIN_PAGE_UI);
+	}
+
+	return;
+}
+	
+/**
+ * @brief Called when a user clicks "Disconnect" in the main window.
+ * @param object A GtkObject
+ * @param user_data Data passed in
+ */
+void main_ui_disconnect (GtkObject *object, gpointer user_data)
+{
+	BrokeUIMain   *main_window;
+	GtkNotebook   *notebook;
+
+	main_window = BROKE_UI_MAIN;
+	notebook = main_window->notebook;
+	broke_connection_close ();
+	
+	gtk_notebook_set_current_page (notebook, MAIN_PAGE_CONNECTION);
 
 	return;
 }

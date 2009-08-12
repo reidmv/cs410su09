@@ -32,14 +32,15 @@
 #include <malloc.h>
 #include "broke_ui.h"
 
-#define GLADE_MAIN   "data/glade/main.glade"
-#define GLADE_ABOUT  "data/glade/about.glade"
+#define GLADE_MAIN     "data/glade/main.glade"
+#define GLADE_ABOUT    "data/glade/about.glade"
 
 #define MAIN_WINDOW    "window"
+#define MAIN_NOTEBOOK  "notebook"
 #define MAIN_LOGIN     "login"
 #define MAIN_STATUSBAR "statusbar"
 
-#define ABOUT_WINDOW "window"
+#define ABOUT_WINDOW   "window"
 
 /*===========================================================================*/
 /*                            Function Prototypes                            */
@@ -74,12 +75,14 @@ BrokeUI *build_window_main (GtkBuilder *builder)
 {
 	BrokeUIMain *broke_window_main;
 	GtkWindow       *window;
+	GtkNotebook     *notebook;
 	GnomeDbLogin    *login;
 	GtkStatusbar    *statusbar;
 
 	gtk_builder_add_from_file (builder, GLADE_MAIN, NULL);
 
 	window    = (GtkWindow    *) gtk_builder_get_object (builder, MAIN_WINDOW);
+	notebook  = (GtkNotebook  *) gtk_builder_get_object (builder, MAIN_NOTEBOOK);
 	login     = (GnomeDbLogin *) gtk_builder_get_object (builder, MAIN_LOGIN);
 	statusbar = (GtkStatusbar *) gtk_builder_get_object (builder, MAIN_STATUSBAR);
 
@@ -88,6 +91,7 @@ BrokeUI *build_window_main (GtkBuilder *builder)
 	broke_window_main = (BrokeUIMain *) malloc (sizeof (BrokeUIMain));
 	broke_window_main->type      = BROKE_WINDOW_MAIN;
 	broke_window_main->window    = window;
+	broke_window_main->notebook  = notebook;
 	broke_window_main->login     = login;
 	broke_window_main->statusbar = statusbar;
 

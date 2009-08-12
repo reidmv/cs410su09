@@ -35,28 +35,40 @@
 #define BROKE_UI_MAIN  (BrokeUIMain  *) (broke_ui_get (BROKE_WINDOW_MAIN))
 #define BROKE_UI_ABOUT (BrokeUIAbout *) (broke_ui_get (BROKE_WINDOW_ABOUT))
 
+/* The singleton windows */
 typedef enum {
 	BROKE_WINDOW_MAIN,
 	BROKE_WINDOW_ABOUT
 } BrokeUIWindow;
 
+/* Main window tabs -- effectively modes */
+typedef enum {
+	MAIN_PAGE_CONNECTION,
+	MAIN_PAGE_UI
+} BrokeMainTab;
+
+/* A generic type representing an unknown window */
 typedef struct BrokeUI {
 	BrokeUIWindow type;
 	GtkWindow    *window;
 } BrokeUI;
 
+/* A type representing the Main Broke window */
 typedef struct BrokeUIMain {
 	BrokeUIWindow type;
 	GtkWindow    *window;
+	GtkNotebook  *notebook;
 	GnomeDbLogin *login;
 	GtkStatusbar *statusbar;
 } BrokeUIMain;
 
+/* A type representing the About window */
 typedef struct BrokeUIAbout {
 	BrokeUIWindow type;
 	GtkWindow *window;
 } BrokeUIAbout;
 
+/* Come and get 'em window element referencer structs, yar! */
 BrokeUI *broke_ui_get   (BrokeUIWindow);
  
 #endif

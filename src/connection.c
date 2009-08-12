@@ -38,20 +38,19 @@
 /*===========================================================================*/
 /*                            Function Prototypes                            */
 /*===========================================================================*/
-GdaConnection *open_connection (GnomeDbLogin *);
-GdaConnection *get_current_connection (void);
+GdaConnection *broke_connection_gnomedblogin (GnomeDbLogin *login);
+void           broke_connection_close        (void);
 
 /* The dictionary used for the program's gda connection */
-static GdaConnection *connection = NULL;
+static GdaClient *client = NULL;
 
 /**
  * @brief Fire up the connection to the selected datasource.
  * @param login A GnomeDbLogin widget from which to obtain login credentials
  */
-GdaConnection *
-open_connection_gnomedblogin (GnomeDbLogin *login) 
+GdaConnection *broke_connection_gnomedblogin (GnomeDbLogin *login) 
 {
-	GdaClient     *client;
+	GdaConnection *connection;
 	BrokeUIMain   *main_window;
 	GtkStatusbar  *sbar;
 	const gchar   *dsn;
@@ -60,6 +59,10 @@ open_connection_gnomedblogin (GnomeDbLogin *login)
 	gchar          sbar_text[SBAR_MAXLEN + 1];
 	guint          context;
 	GError        *error = NULL;
+
+	if (client == NULL) {
+		client = gda_client_new ();	
+	}
 
 	main_window = BROKE_UI_MAIN;
 	sbar        = main_window->statusbar;
@@ -72,12 +75,11 @@ open_connection_gnomedblogin (GnomeDbLogin *login)
 	gtk_statusbar_pop (sbar, context);
 	gtk_statusbar_push (sbar, context, sbar_text);
 
-	client = gda_client_new ();
 	connection = gda_client_open_connection (client,
 	                                         dsn,
 	                                         username,
 	                                         password,
-                                           GDA_CONNECTION_OPTIONS_NONE,
+	                                         GDA_CONNECTION_OPTIONS_NONE,
 	                                         &error);
 	
 	if (! connection) {
@@ -95,13 +97,28 @@ open_connection_gnomedblogin (GnomeDbLogin *login)
 }
 
 /**
- * @brief  Return the current connection.
- *         Some work needs to be done here...
+ * @brief  Disconnect from the database.
  * @return A pointer to the current connection.
- *         Returns NULL if the connection is not open or if errors occur.
+ *         Obviously, this should be null at this point...
  */
-GdaConnection *get_current_connection (void)
+void broke_connection_close (void)
 {
-	return connection;
-}
+	BrokeUIMain   *main_window;
+	GtkStatusbar  *sbar;
+	gchar          sbar_text[SBAR_MAXLEN + 1];
+	guint          context;
 
+	main_window = BROKE_UI_MAIN;
+	sbar        = main_window->statusbar;
+	context     = gtk_statusbar_get_context_id (sbar, SBAR_CONTEXT_CONNECTING);
+	
+	gtk_statusbar_pop (sbar, context);
+	gtk_statusbar_push (sbar, context, "Disconnected");
+	g_print ("Disconnected\n");
+
+	if (client != NULL) {
+		gda_client_close_all_connections (client);
+	}
+
+	return;
+}

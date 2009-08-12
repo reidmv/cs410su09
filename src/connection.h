@@ -33,7 +33,7 @@
 #include <libgda/libgda.h>
 #include <libgnomedb/libgnomedb.h>
 
-GdaConnection *open_connection_gnomedblogin (GnomeDbLogin *login);
-GdaConnection *get_current_connection       (void);
+GdaConnection *broke_connection_gnomedblogin (GnomeDbLogin *login);
+void           broke_connection_close        (void);
 
 #endif
